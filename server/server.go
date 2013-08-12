@@ -14,7 +14,7 @@ import (
 
 var (
 	Version = "0.0.1"
-	profanity *filter.Filter
+	pfilter *filter.Filter
 	router  *mux.Router
 )
 
@@ -31,7 +31,7 @@ func sigTrapCloser(l net.Listener) {
 }
 
 func setupServer(filename string) {
-	profanity = filter.NewFilter()
+	pfilter = filter.NewFilter()
 
 	if filename != "" {
 		loadFromFile(filename)
@@ -71,7 +71,6 @@ func loadFromFile(filename string) error {
 		return err
 	}
 
-	words := strings.Split(strings.TrimSpace(string(content)), "\n")
-	profanity.Reload(words, true)
+	pfilter.Replace(strings.Split(strings.TrimSpace(string(content)), "\n"))
 	return nil
 }

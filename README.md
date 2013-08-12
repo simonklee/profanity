@@ -12,8 +12,8 @@ word in the list with **** (stars).
 ## Profanity
 
 `profanity` is a HTTP server which implements a simple API.
-It exposes the `filter.Reload()` and `filter.Sanitize()`
-method. 
+It exposes the `filter.Update()`, `filter.Replace` and
+`filter.Sanitize()` methods. 
 
 ### API
 

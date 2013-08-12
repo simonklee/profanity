@@ -25,7 +25,7 @@ func initFilter() {
 
 func TestFilter(t *testing.T) {
 	pfilter := NewFilter()
-	pfilter.Reload(smallList, true)
+	pfilter.Replace(smallList)
 
 	tests := []*ProfanityTest{
 		{"foo", "foo"},
@@ -44,7 +44,7 @@ func TestFilter(t *testing.T) {
 
 func TestBlacklist(t *testing.T) {
 	pfilter := NewFilter()
-	pfilter.Reload(smallList, true)
+	pfilter.Replace(smallList)
 
 	if len(pfilter.Blacklist()) != len(smallList) {
 		t.Fatalf("expected %d got %d", len(smallList), len(pfilter.Blacklist()))
@@ -54,13 +54,13 @@ func TestBlacklist(t *testing.T) {
 		"mother",
 	}
 
-	pfilter.Reload(newItems, true)
+	pfilter.Replace(newItems)
 
 	if len(pfilter.Blacklist()) != 1 {
 		t.Fatalf("expected 1 got %d", len(pfilter.Blacklist()))
 	}
 
-	pfilter.Reload(smallList, false)
+	pfilter.Update(smallList)
 
 	if len(pfilter.Blacklist()) != len(smallList) + 1 {
 		t.Fatalf("expected %d got %d, %v", len(smallList)+1, len(pfilter.Blacklist()), pfilter.Blacklist())
@@ -71,7 +71,7 @@ func TestBlacklist(t *testing.T) {
 	}
 
 	oldlen := len(pfilter.Blacklist())
-	pfilter.Reload(newItems, false)
+	pfilter.Update(newItems)
 
 	if len(pfilter.Blacklist()) != oldlen {
 		t.Fatalf("expected %d got %d", oldlen, len(pfilter.Blacklist()))
@@ -102,7 +102,7 @@ func TestBlacklist(t *testing.T) {
 
 func BenchmarkBoyer(b *testing.B) {
 	pfilter := NewFilter()
-	pfilter.Reload(largeList, true)
+	pfilter.Replace(largeList)
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
@@ -112,7 +112,7 @@ func BenchmarkBoyer(b *testing.B) {
 
 func BenchmarkSmallList(b *testing.B) {
 	pfilter := NewFilter()
-	pfilter.Reload(smallList, true)
+	pfilter.Replace(smallList)
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {

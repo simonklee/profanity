@@ -31,7 +31,7 @@ func sanitizeHandle(w http.ResponseWriter, r *http.Request) {
 	//}
 
 	text := r.FormValue("text")
-	sanitized := profanity.Sanitize(text)
+	sanitized := pfilter.Sanitize(text)
 	//Logf("lang: %s, text: %s, sanitized: %s", lang, text, sanitized)
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
@@ -48,23 +48,17 @@ func postBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 		return 
 	}
 
-	replace := true
-
 	if r.Method == "PUT" {
-		replace = false
-	}
-
-	profanity.Reload(blacklist, replace)
-
-	if replace {
-		w.WriteHeader(201)
-	} else {
+		pfilter.Update(blacklist)
 		w.WriteHeader(200)
+	} else {
+		pfilter.Replace(blacklist)
+		w.WriteHeader(201)
 	}
 }
 
 func getBlacklistHandle(w http.ResponseWriter, r *http.Request) {
-	blacklist := profanity.Blacklist()
+	blacklist := pfilter.Blacklist()
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	json.NewEncoder(w).Encode(&blacklist)
 }

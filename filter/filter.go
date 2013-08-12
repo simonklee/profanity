@@ -88,13 +88,20 @@ func merge(slice, data []string) []string {
     return slice
 }
 
+func (p *Filter) Replace(blacklist []string) error {
+	return p.reload(blacklist, false)
+}
+
 // replace the current blacklist with a new one
-func (p *Filter) Reload(blacklist []string, replace bool) error {
-	// TODO: aquire Rlock on blacklist
+func (p *Filter) Update(blacklist []string) error {
+	return p.reload(blacklist, true)
+}
+
+func (p *Filter) reload(blacklist []string, update bool) error {
 	p.blackMu.Lock()
 	defer p.blackMu.Unlock()
 
-	if !replace {
+	if update {
 		n := len(p.blacklist)
 		newBlacklist := make([]string, n, n+len(blacklist))
 		copy(newBlacklist, p.blacklist)
