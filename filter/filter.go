@@ -8,7 +8,7 @@ import (
 	"sync"
 )
 
-// a thread-safe profanity filter
+// A thread-safe profanity filter
 type Filter struct {
 	blacklist []string
 	blackMu   sync.RWMutex // blacklist locker
@@ -16,7 +16,7 @@ type Filter struct {
 	replMu    sync.RWMutex // repl locker
 }
 
-// used to optimize reloading
+// starmap used to draw N stars in place of a blacklisted word. 
 var starmap [16]string
 
 func init() {
@@ -39,6 +39,7 @@ func imax(a, b int) int {
 	return a
 }
 
+// Returns a new word filter. The word filter is empty by default.
 func NewFilter() *Filter {
 	return &Filter{
 		blacklist: []string{},
@@ -88,12 +89,12 @@ func merge(slice, data []string) []string {
 	return slice
 }
 
-// replace blacklist words in slice
+// Replace blacklist with the slice input 
 func (p *Filter) Replace(blacklist []string) error {
 	return p.reload(blacklist)
 }
 
-// update blacklist with words in slice
+// Update blacklist with words from slice
 func (p *Filter) Update(blacklist []string) error {
 	p.blackMu.RLock()
 	n := len(p.blacklist)
@@ -109,7 +110,7 @@ func (p *Filter) Update(blacklist []string) error {
 	return p.reload(blacklist)
 }
 
-// delete blacklist words with words in slice
+// Delete words in blacklist which match words in input.
 func (p *Filter) Remove(blacklist []string) error {
 	if len(blacklist) == 0 {
 		return nil
@@ -136,7 +137,7 @@ func (p *Filter) Remove(blacklist []string) error {
 	return p.reload(slice)
 }
 
-// reload word list
+// reload blacklist
 func (p *Filter) reload(blacklist []string) error {
 	repl, err := p.buildReplacer(blacklist)
 
@@ -153,7 +154,7 @@ func (p *Filter) reload(blacklist []string) error {
 	return nil
 }
 
-// builter replacer struct
+// Build string replacer from blacklist
 func (p *Filter) buildReplacer(blacklist []string) (*strings.Replacer, error) {
 	var starindex int
 	n := len(blacklist) * 2
@@ -173,12 +174,15 @@ func (p *Filter) buildReplacer(blacklist []string) (*strings.Replacer, error) {
 	return strings.NewReplacer(repl...), nil
 }
 
+// Returns a copy of string v where each word in the text that matches a word
+// in the blacklist is replaced by ****.
 func (p *Filter) Sanitize(v string) string {
 	p.replMu.RLock()
 	defer p.replMu.RUnlock()
 	return p.repl.Replace(v)
 }
 
+// Returns a copy of the current blacklist.
 func (p *Filter) Blacklist() []string {
 	p.blackMu.RLock()
 	defer p.blackMu.RUnlock()
@@ -187,6 +191,7 @@ func (p *Filter) Blacklist() []string {
 	return newSlice
 }
 
+// Returns the blacklist lenght.
 func (p *Filter) BlacklistLen() int {
 	p.blackMu.RLock()
 	defer p.blackMu.RUnlock()
