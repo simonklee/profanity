@@ -2,8 +2,8 @@ package server
 
 import (
 	"encoding/json"
-	"net/http"
 	"fmt"
+	"net/http"
 )
 
 func JsonError(w http.ResponseWriter, error string, code int) {
@@ -14,7 +14,7 @@ func JsonError(w http.ResponseWriter, error string, code int) {
 
 type ErrorResponse struct {
 	Error string `json:error`
-	Code int `json:code`
+	Code  int    `json:code`
 }
 
 type Response struct {
@@ -35,7 +35,7 @@ func sanitizeHandle(w http.ResponseWriter, r *http.Request) {
 	//Logf("lang: %s, text: %s, sanitized: %s", lang, text, sanitized)
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	json.NewEncoder(w).Encode(&Response{Text:sanitized})
+	json.NewEncoder(w).Encode(&Response{Text: sanitized})
 }
 
 func postBlacklistHandle(w http.ResponseWriter, r *http.Request) {
@@ -45,7 +45,7 @@ func postBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 
 	if !ok || len(blacklist) == 0 {
 		JsonError(w, "Expected `blacklist` key", 400)
-		return 
+		return
 	}
 
 	if r.Method == "PUT" {

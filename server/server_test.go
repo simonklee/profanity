@@ -1,14 +1,14 @@
 package server
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strings"
 	"sync"
 	"testing"
-	"strings"
 )
 
 var (
@@ -30,7 +30,7 @@ type SanitizeTest struct {
 
 type BlacklistTest struct {
 	in, out []string
-	method string
+	method  string
 }
 
 func TestBlacklist(t *testing.T) {
@@ -40,7 +40,7 @@ func TestBlacklist(t *testing.T) {
 		{[]string{"x"}, []string{"x"}, "POST"},
 		{[]string{"x"}, []string{"x"}, "POST"},
 		{[]string{"x"}, []string{"x"}, "PUT"},
-		{[]string{"y"}, []string{"x","y"}, "PUT"},
+		{[]string{"y"}, []string{"x", "y"}, "PUT"},
 		{[]string{"a"}, []string{"a", "x", "y"}, "PUT"},
 		{[]string{"a", "b", "c"}, []string{"a", "b", "c", "x", "y"}, "PUT"},
 	}
@@ -72,7 +72,7 @@ func blacklistHttp(t *testing.T, index int, in, out []string, method string) {
 	if method == "POST" {
 		if r.StatusCode != 201 {
 			t.Fatalf("expected status code 201, got %d", r.StatusCode)
-		} 
+		}
 	} else {
 		if r.StatusCode != 200 {
 			t.Fatalf("expected status code 200, got %d", r.StatusCode)
@@ -152,7 +152,7 @@ func sanitizeHttp(t *testing.T, index int, in, out string) {
 }
 
 func BenchmarkServer(b *testing.B) {
-	in := []string{"a", "b", "c", "d", "e", "f", "g", "h","k", "l", "m", "n", "o", "p", "q", "r", "s", "t"}
+	in := []string{"a", "b", "c", "d", "e", "f", "g", "h", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t"}
 	values := url.Values{}
 
 	for _, s := range in {

@@ -1,11 +1,11 @@
 package server
 
 import (
+	"io/ioutil"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
-	"io/ioutil"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -49,7 +49,7 @@ func setupServer(filename string) {
 
 func ListenAndServe(laddr, filename string) error {
 	setupServer(filename)
-	
+
 	l, err := net.Listen("tcp", laddr)
 
 	if err != nil {

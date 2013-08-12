@@ -3,15 +3,15 @@ package filter
 import (
 	"errors"
 	"fmt"
+	"sort"
 	"strings"
 	"sync"
-	"sort"
 )
 
 // a thread-safe profanity filter
 type Filter struct {
 	blacklist []string
-	blackMu    sync.RWMutex // blacklist locker
+	blackMu   sync.RWMutex // blacklist locker
 	repl      *strings.Replacer
 	replMu    sync.RWMutex // repl locker
 }
@@ -42,7 +42,7 @@ func imax(a, b int) int {
 func NewFilter() *Filter {
 	return &Filter{
 		blacklist: []string{},
-		repl: strings.NewReplacer(),
+		repl:      strings.NewReplacer(),
 	}
 }
 
@@ -57,11 +57,11 @@ func merge(slice, data []string) []string {
 	l := len(slice)
 	//println(len(data), len(slice), cap(slice))
 
-    if l + len(data) > cap(slice) {  // reallocate
-        newSlice := make([]string, l, (l+len(data)*2))
-        copy(newSlice, slice)
-        slice = newSlice
-    }
+	if l+len(data) > cap(slice) { // reallocate
+		newSlice := make([]string, l, (l + len(data)*2))
+		copy(newSlice, slice)
+		slice = newSlice
+	}
 
 	n := len(data)
 
@@ -75,17 +75,17 @@ func merge(slice, data []string) []string {
 
 		// if it's the last elem simply append
 		if i == n {
-			slice = slice[0:len(slice)+1]
+			slice = slice[0 : len(slice)+1]
 			slice[i] = c
 		} else {
 			// insert into the slice
-			slice = slice[0:len(slice)+1]
+			slice = slice[0 : len(slice)+1]
 			copy(slice[i+1:], slice[i:])
 			slice[i] = c
 		}
 	}
 
-    return slice
+	return slice
 }
 
 func (p *Filter) Replace(blacklist []string) error {
