@@ -41,7 +41,7 @@ Update blacklist.
 
     PUT --data "blacklist=y" /api/1.0/blacklist/
 
-    HTTP/1.1 200 Created
+    HTTP/1.1 200 OK
     Date: Mon, 12 Aug 2013 09:37:17 GMT
     Content-Length: 0
     Content-Type: text/plain; charset=utf-8

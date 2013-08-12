@@ -19,7 +19,7 @@ var (
 
 func startServer() {
 	LogLevel = 1
-	setupServer()
+	setupServer("")
 	server = httptest.NewServer(nil)
 	serverAddr = server.Listener.Addr().String()
 }

@@ -30,7 +30,7 @@ func sigTrapCloser(l net.Listener) {
 	}()
 }
 
-func ListenAndServe(laddr, filename string) error {
+func setupServer(filename string) {
 	profanity = filter.NewFilter()
 
 	if filename != "" {
@@ -45,6 +45,11 @@ func ListenAndServe(laddr, filename string) error {
 	router.StrictSlash(false)
 	http.Handle("/", router)
 
+}
+
+func ListenAndServe(laddr, filename string) error {
+	setupServer(filename)
+	
 	l, err := net.Listen("tcp", laddr)
 
 	if err != nil {
