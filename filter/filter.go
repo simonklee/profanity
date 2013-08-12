@@ -136,7 +136,7 @@ func (p *Filter) Remove(blacklist []string) error {
 	return p.reload(slice)
 }
 
-// reload word list 
+// reload word list
 func (p *Filter) reload(blacklist []string) error {
 	repl, err := p.buildReplacer(blacklist)
 

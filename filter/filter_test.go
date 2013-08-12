@@ -80,8 +80,8 @@ func TestBlacklist(t *testing.T) {
 	oldlen = pfilter.BlacklistLen()
 	pfilter.Remove(newItems)
 
-	if pfilter.BlacklistLen() != oldlen - 1 {
-		t.Fatalf("expected %d got %d", oldlen -1, pfilter.BlacklistLen())
+	if pfilter.BlacklistLen() != oldlen-1 {
+		t.Fatalf("expected %d got %d", oldlen-1, pfilter.BlacklistLen())
 	}
 }
 

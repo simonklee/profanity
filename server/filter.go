@@ -49,14 +49,14 @@ func updateBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	switch r.Method {
-		case "PUT":
-			pfilter.Update(blacklist)
-			w.WriteHeader(200)
-		case "POST":
-			pfilter.Replace(blacklist)
-			w.WriteHeader(201)
-		default:
-			panic("should not reach")
+	case "PUT":
+		pfilter.Update(blacklist)
+		w.WriteHeader(200)
+	case "POST":
+		pfilter.Replace(blacklist)
+		w.WriteHeader(201)
+	default:
+		panic("should not reach")
 	}
 }
 
