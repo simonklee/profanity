@@ -1,4 +1,4 @@
-# profanity — profanity filter service 
+# profanity — word filter service and library
 
 [![Build Status](https://travis-ci.org/simonz05/profanity.png?branch=master)](https://travis-ci.org/simonz05/profanity)
 
