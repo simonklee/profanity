@@ -15,6 +15,29 @@ word in the list with **** (stars).
 It exposes the `filter.Update()`, `filter.Replace()`,
 `filter.Remove()` and `filter.Sanitize()` methods. 
 
+Usage:
+
+    profanity [flag]
+
+The flags are:
+
+    -v
+            verbose mode
+    -h
+            help text
+    -http=":8080"
+            specifiy which address the HTTP server should bind
+            to.
+    -wordlist=""
+            filepath to use a '\n' separated word list which
+            will be loaded as the default.
+    -logLevel=0
+            set log level
+    -version=false
+            display version number and exit
+    -debug.cpuprofile=""
+            run cpu profiler
+
 ### API
 
 Create/overwrite blacklist.
