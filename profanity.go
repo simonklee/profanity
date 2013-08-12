@@ -12,12 +12,14 @@ import (
 )
 
 var (
-	help       = flag.Bool("h", false, "this help")
-	laddr      = flag.String("a", ":8080", "bind address")
-	filename   = flag.String("filename", "", "filename which contains db")
-	logLevel   = flag.Int("l", 0, "set logging level")
-	version    = flag.Bool("v", false, "show version and exit")
-	cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
+	verbose  = flag.Bool("v", false, "verbose mode")
+	help     = flag.Bool("h", false, "show help text")
+	laddr    = flag.String("http", ":8080", "set bind address for the HTTP server")
+	wordlist = flag.String("wordlist", "", `filepath to use a '\\n' separated word list 
+		which will be used as the default profanity filter`)
+	logLevel   = flag.Int("log", 0, "set log level")
+	version    = flag.Bool("version", false, "show version number and exit")
+	cpuprofile = flag.String("debug.cpuprofile", "", "write cpu profile to file")
 )
 
 func usage() {
@@ -46,7 +48,12 @@ func main() {
 	}
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	server.LogLevel = *logLevel
+
+	if *verbose {
+		server.LogLevel = 2
+	} else {
+		server.LogLevel = *logLevel
+	}
 
 	if *cpuprofile != "" {
 		f, err := os.Create(*cpuprofile)
@@ -57,7 +64,7 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 
-	err := server.ListenAndServe(*laddr, *filename)
+	err := server.ListenAndServe(*laddr, *wordlist)
 
 	if err != nil {
 		log.Println(err)
