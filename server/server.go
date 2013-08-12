@@ -40,7 +40,8 @@ func setupServer(filename string) {
 	// HTTP endpoints
 	router = mux.NewRouter()
 	router.HandleFunc("/api/1.0/sanitize/", sanitizeHandle).Methods("GET").Name("sanitize")
-	router.HandleFunc("/api/1.0/blacklist/", postBlacklistHandle).Methods("POST", "PUT").Name("blacklist")
+	router.HandleFunc("/api/1.0/blacklist/", updateBlacklistHandle).Methods("POST", "PUT").Name("blacklist")
+	router.HandleFunc("/api/1.0/blacklist/remove/", removeBlacklistHandle).Methods("POST", "PUT").Name("blacklist")
 	router.HandleFunc("/api/1.0/blacklist/", getBlacklistHandle).Methods("GET").Name("blacklist")
 	router.StrictSlash(false)
 	http.Handle("/", router)

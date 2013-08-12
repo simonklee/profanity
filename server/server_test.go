@@ -43,6 +43,7 @@ func TestBlacklist(t *testing.T) {
 		{[]string{"y"}, []string{"x", "y"}, "PUT"},
 		{[]string{"a"}, []string{"a", "x", "y"}, "PUT"},
 		{[]string{"a", "b", "c"}, []string{"a", "b", "c", "x", "y"}, "PUT"},
+		{[]string{"a", "b", "c"}, []string{"x", "y"}, "DELETE"},
 	}
 
 	for i, x := range tests {
@@ -52,13 +53,21 @@ func TestBlacklist(t *testing.T) {
 
 func blacklistHttp(t *testing.T, index int, in, out []string, method string) {
 	values := url.Values{}
+	var uri string
 
 	for _, s := range in {
 		values.Add("blacklist", s)
 	}
 
 	params := strings.NewReader(values.Encode())
-	req, _ := http.NewRequest(method, fmt.Sprintf("http://%s/api/1.0/blacklist/", serverAddr), params)
+	if method == "DELETE" {
+		method = "PUT"
+		uri = fmt.Sprintf("http://%s/api/1.0/blacklist/remove/", serverAddr)
+	} else {
+		uri = fmt.Sprintf("http://%s/api/1.0/blacklist/", serverAddr)
+	}
+
+	req, _ := http.NewRequest(method, uri, params)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}
@@ -73,9 +82,13 @@ func blacklistHttp(t *testing.T, index int, in, out []string, method string) {
 		if r.StatusCode != 201 {
 			t.Fatalf("expected status code 201, got %d", r.StatusCode)
 		}
-	} else {
+	} else if method == "PUT" {
 		if r.StatusCode != 200 {
 			t.Fatalf("expected status code 200, got %d", r.StatusCode)
+		}
+	} else {
+		if r.StatusCode != 204 {
+			t.Fatalf("expected status code 204, got %d", r.StatusCode)
 		}
 	}
 

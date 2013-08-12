@@ -38,7 +38,7 @@ func sanitizeHandle(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&Response{Text: sanitized})
 }
 
-func postBlacklistHandle(w http.ResponseWriter, r *http.Request) {
+func updateBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	blacklist, ok := r.Form["blacklist"]
@@ -48,13 +48,30 @@ func postBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if r.Method == "PUT" {
-		pfilter.Update(blacklist)
-		w.WriteHeader(200)
-	} else {
-		pfilter.Replace(blacklist)
-		w.WriteHeader(201)
+	switch r.Method {
+		case "PUT":
+			pfilter.Update(blacklist)
+			w.WriteHeader(200)
+		case "POST":
+			pfilter.Replace(blacklist)
+			w.WriteHeader(201)
+		default:
+			panic("should not reach")
 	}
+}
+
+func removeBlacklistHandle(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	blacklist, ok := r.Form["blacklist"]
+
+	if !ok || len(blacklist) == 0 {
+		JsonError(w, "Expected `blacklist` key", 400)
+		return
+	}
+
+	pfilter.Remove(blacklist)
+	w.WriteHeader(200)
 }
 
 func getBlacklistHandle(w http.ResponseWriter, r *http.Request) {

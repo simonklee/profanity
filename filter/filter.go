@@ -88,45 +88,72 @@ func merge(slice, data []string) []string {
 	return slice
 }
 
+// replace blacklist words in slice
 func (p *Filter) Replace(blacklist []string) error {
-	return p.reload(blacklist, false)
+	return p.reload(blacklist)
 }
 
-// replace the current blacklist with a new one
+// update blacklist with words in slice
 func (p *Filter) Update(blacklist []string) error {
-	return p.reload(blacklist, true)
-}
+	p.blackMu.RLock()
+	n := len(p.blacklist)
+	newBlacklist := make([]string, n, n+len(blacklist))
+	copy(newBlacklist, p.blacklist)
+	p.blackMu.RUnlock()
 
-func (p *Filter) reload(blacklist []string, update bool) error {
-	p.blackMu.Lock()
-	defer p.blackMu.Unlock()
-
-	if update {
-		n := len(p.blacklist)
-		newBlacklist := make([]string, n, n+len(blacklist))
-		copy(newBlacklist, p.blacklist)
-		// we dont want to hold lock while merging blacklists
-
-		if !sort.StringsAreSorted(newBlacklist) {
-			sort.Strings(newBlacklist)
-		}
-
-		blacklist = merge(newBlacklist, blacklist)
+	if !sort.StringsAreSorted(newBlacklist) {
+		sort.Strings(newBlacklist)
 	}
 
+	blacklist = merge(newBlacklist, blacklist)
+	return p.reload(blacklist)
+}
+
+// delete blacklist words with words in slice
+func (p *Filter) Remove(blacklist []string) error {
+	if len(blacklist) == 0 {
+		return nil
+	}
+
+	slice := p.Blacklist()
+	oldLen := len(slice)
+
+	for _, c := range blacklist {
+		i := sort.SearchStrings(slice, c)
+
+		if i == -1 {
+			continue
+		}
+
+		slice = append(slice[:i], slice[i+1:]...)
+	}
+
+	// nothing changed
+	if oldLen == len(slice) {
+		return nil
+	}
+
+	return p.reload(slice)
+}
+
+// reload word list 
+func (p *Filter) reload(blacklist []string) error {
 	repl, err := p.buildReplacer(blacklist)
 
 	if err != nil {
 		return err
 	}
 
-	p.replMu.Lock()
-	defer p.replMu.Unlock()
+	p.blackMu.Lock()
 	p.blacklist = blacklist
+	p.blackMu.Unlock()
+	p.replMu.Lock()
 	p.repl = repl
+	p.replMu.Unlock()
 	return nil
 }
 
+// builter replacer struct
 func (p *Filter) buildReplacer(blacklist []string) (*strings.Replacer, error) {
 	var starindex int
 	n := len(blacklist) * 2
