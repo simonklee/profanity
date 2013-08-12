@@ -4,10 +4,11 @@
 
 ## Filter
 
-`filter` is a simple library which implements a word filter.
-The library takes a list of words which are used to sanitize
-text. The sanitizer will replace all words which match a
-word in the list with **** (stars). 
+[filter](http://godoc.org/simonz05/profanity/filter) is a
+simple library which implements a word filter.  The library
+takes a list of words which are used to sanitize text. The
+sanitizer will replace all words which match a word in the
+list with **** (stars). 
 
 ## Profanity
 
@@ -26,12 +27,11 @@ The flags are:
     -h
             help text
     -http=":8080"
-            specifiy which address the HTTP server should bind
-            to.
+            set bind address for the HTTP server
     -wordlist=""
             filepath to use a '\n' separated word list which
-            will be loaded as the default.
-    -logLevel=0
+            will be used as the default profanity filter
+    -log=0
             set log level
     -version=false
             display version number and exit

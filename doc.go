@@ -33,12 +33,11 @@
 //    	-h
 //    		help text
 //    	-http=":8080"
-//    		specifiy which address the HTTP server should bind
-//    		to.
+//    		set bind address for the HTTP server
 //    	-wordlist=""
-//    		filepath to use a '\n' separated word list which
-//    		will be loaded as the default.
-//    	-logLevel=0
+//			filepath to use a '\n' separated word list which
+//          will be used as the default profanity filter
+//    	-log=0
 //    		set log level
 //    	-version=false
 //    		display version number and exit
