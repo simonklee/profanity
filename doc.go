@@ -36,7 +36,7 @@
 //    		set bind address for the HTTP server
 //    	-wordlist=""
 //			filepath to use a '\n' separated word list which
-//          will be used as the default profanity filter
+//			will be used as the default profanity filter
 //    	-log=0
 //    		set log level
 //    	-version=false
