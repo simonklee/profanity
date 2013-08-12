@@ -4,7 +4,7 @@
 
 ## Filter
 
-[filter](http://godoc.org/simonz05/profanity/filter) is a
+[filter](http://godoc.org/github.com/simonz05/profanity/filter) is a
 simple library which implements a word filter.  The library
 takes a list of words which are used to sanitize text. The
 sanitizer will replace all words which match a word in the
