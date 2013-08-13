@@ -91,6 +91,7 @@ func merge(slice, data []string) []string {
 
 // Replace blacklist with the slice input 
 func (p *Filter) Replace(blacklist []string) error {
+	sort.Strings(blacklist)
 	return p.reload(blacklist)
 }
 

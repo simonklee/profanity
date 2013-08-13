@@ -52,22 +52,19 @@ func TestBlacklist(t *testing.T) {
 
 	newItems := []string{
 		"mother",
+		"father",
 	}
 
 	pfilter.Replace(newItems)
 
-	if pfilter.BlacklistLen() != 1 {
-		t.Fatalf("expected 1 got %d", pfilter.BlacklistLen())
+	if pfilter.BlacklistLen() != 2 {
+		t.Fatalf("expected 2 got %d", pfilter.BlacklistLen())
 	}
 
 	pfilter.Update(smallList)
 
-	if pfilter.BlacklistLen() != len(smallList)+1 {
-		t.Fatalf("expected %d got %d, %v", len(smallList)+1, pfilter.BlacklistLen(), pfilter.Blacklist())
-	}
-
-	newItems = []string{
-		"mother",
+	if pfilter.BlacklistLen() != len(smallList)+2 {
+		t.Fatalf("expected %d got %d, %v", len(smallList)+2, pfilter.BlacklistLen(), pfilter.Blacklist())
 	}
 
 	oldlen := pfilter.BlacklistLen()
@@ -80,8 +77,8 @@ func TestBlacklist(t *testing.T) {
 	oldlen = pfilter.BlacklistLen()
 	pfilter.Remove(newItems)
 
-	if pfilter.BlacklistLen() != oldlen-1 {
-		t.Fatalf("expected %d got %d", oldlen-1, pfilter.BlacklistLen())
+	if pfilter.BlacklistLen() != oldlen-2 {
+		t.Fatalf("expected %d got %d", oldlen-2, pfilter.BlacklistLen())
 	}
 }
 
