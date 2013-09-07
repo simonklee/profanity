@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
 func JsonError(w http.ResponseWriter, error string, code int) {
@@ -75,6 +76,16 @@ func removeBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 }
 
 func getBlacklistHandle(w http.ResponseWriter, r *http.Request) {
+	//lang := r.FormValue["lang"]
+	count, err := strconv.Atoi(r.FormValue("count"))
+	if err != nil {
+		count = 20
+	}
+	offset, err := strconv.Atoi(r.FormValue("offset"))
+	if err != nil {
+		offset = 0
+	}
+
 	blacklist := pfilter.Blacklist()
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	json.NewEncoder(w).Encode(&blacklist)
