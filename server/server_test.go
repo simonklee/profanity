@@ -54,6 +54,7 @@ func TestBlacklist(t *testing.T) {
 func blacklistHttp(t *testing.T, index int, in, out []string, method string) {
 	values := url.Values{}
 	var uri string
+	values.Set("lang", "en_US")
 
 	for _, s := range in {
 		values.Add("blacklist", s)
@@ -92,14 +93,14 @@ func blacklistHttp(t *testing.T, index int, in, out []string, method string) {
 		}
 	}
 
-	r, err = http.Get(fmt.Sprintf("http://%s/api/1.0/blacklist/", serverAddr))
+	r, err = http.Get(fmt.Sprintf("http://%s/api/1.0/blacklist/?lang=%s", serverAddr, "en_US"))
 
 	if err != nil {
 		t.Fatalf("error getting: %s", err)
 		return
 	}
 
-	var res []string
+	var res BlacklistResponse
 	err = json.NewDecoder(r.Body).Decode(&res)
 
 	if err != nil {
@@ -108,13 +109,13 @@ func blacklistHttp(t *testing.T, index int, in, out []string, method string) {
 
 	//Logf("res: %s", res)
 
-	if len(res) != len(out) {
-		t.Fatalf("%d != %d", len(res), len(out))
+	if len(res.Blacklist) != len(out) {
+		t.Fatalf("%d != %d", len(res.Blacklist), len(out))
 	}
 
-	for i := 0; i < len(res); i++ {
-		if res[i] != out[i] {
-			t.Fatalf("%s != %s", res[i], out[i])
+	for i := 0; i < len(res.Blacklist); i++ {
+		if res.Blacklist[i] != out[i] {
+			t.Fatalf("%s != %s", res.Blacklist[i], out[i])
 		}
 	}
 }
@@ -137,6 +138,7 @@ func TestSanitize(t *testing.T) {
 func sanitizeHttp(t *testing.T, index int, in, out string) {
 	values := url.Values{
 		"text": {in},
+		"lang": {"en_US"},
 	}
 
 	r, err := http.Get(fmt.Sprintf("http://%s/api/1.0/sanitize/?%s", serverAddr, values.Encode()))
@@ -146,14 +148,14 @@ func sanitizeHttp(t *testing.T, index int, in, out string) {
 		return
 	}
 
-	res := new(Response)
+	res := new(SanitizeResponse)
 	err = json.NewDecoder(r.Body).Decode(res)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	Logf("res: %s", res)
+	//Logf("res: %s", res)
 
 	if r.StatusCode != 200 {
 		t.Fatalf("expected status code 200, got %d", r.StatusCode)

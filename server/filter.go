@@ -4,8 +4,44 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
+	//"strconv"
+	"github.com/simonz05/profanity/filter"
+	"sync"
 )
+
+type PFilter struct {
+	f  *map[string]*filter.Filter
+	mu sync.RWMutex
+}
+
+func NewPFilter() *PFilter {
+	m := make(map[string]*filter.Filter, 10)
+	return &PFilter{
+		f: &m,
+	}
+}
+
+func (pf *PFilter) addLang(lang string) *filter.Filter {
+	pf.mu.Lock()
+	m := make(map[string]*filter.Filter, len(*pf.f))
+	for k, v := range *(pf.f) {
+		m[k] = v
+	}
+	f := filter.NewFilter()
+	m[lang] = f
+	pf.f = &m
+	pf.mu.Unlock()
+	return f
+}
+
+func (pf *PFilter) Get(lang string) *filter.Filter {
+	f, ok := (*pf.f)[lang]
+
+	if !ok {
+		f = pf.addLang(lang)
+	}
+	return f
+}
 
 func JsonError(w http.ResponseWriter, error string, code int) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
@@ -18,30 +54,36 @@ type ErrorResponse struct {
 	Code  int    `json:code`
 }
 
-type Response struct {
+type SanitizeResponse struct {
 	Text string `json:"text"`
-	Lang string `json:"lang"`
+}
+
+type BlacklistResponse struct {
+	Blacklist []string `json:"blacklist"`
+	Total     int      `json:"total"`
 }
 
 func sanitizeHandle(w http.ResponseWriter, r *http.Request) {
-	// TODO: add lang
-	//lang := r.FormValue("lang")
-	//if err != nil {
-	//	JsonError(w, "Invalid lang", 400)
-	//	return
-	//}
+	lang := r.FormValue("lang")
+	if lang == "" {
+		JsonError(w, "Invalid lang", 400)
+		return
+	}
 
 	text := r.FormValue("text")
-	sanitized := pfilter.Sanitize(text)
+	sanitized := pfilter.Get(lang).Sanitize(text)
 	//Logf("lang: %s, text: %s, sanitized: %s", lang, text, sanitized)
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	json.NewEncoder(w).Encode(&Response{Text: sanitized})
+	json.NewEncoder(w).Encode(&SanitizeResponse{Text: sanitized})
 }
 
 func updateBlacklistHandle(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-
+	lang := r.FormValue("lang")
+	if lang == "" {
+		JsonError(w, "Invalid lang", 400)
+		return
+	}
 	blacklist, ok := r.Form["blacklist"]
 
 	if !ok || len(blacklist) == 0 {
@@ -51,10 +93,10 @@ func updateBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "PUT":
-		pfilter.Update(blacklist)
+		pfilter.Get(lang).Update(blacklist)
 		w.WriteHeader(200)
 	case "POST":
-		pfilter.Replace(blacklist)
+		pfilter.Get(lang).Replace(blacklist)
 		w.WriteHeader(201)
 	default:
 		panic("should not reach")
@@ -62,8 +104,11 @@ func updateBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 }
 
 func removeBlacklistHandle(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-
+	lang := r.FormValue("lang")
+	if lang == "" {
+		JsonError(w, "Invalid lang", 400)
+		return
+	}
 	blacklist, ok := r.Form["blacklist"]
 
 	if !ok || len(blacklist) == 0 {
@@ -71,22 +116,34 @@ func removeBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pfilter.Remove(blacklist)
+	pfilter.Get(lang).Remove(blacklist)
 	w.WriteHeader(200)
 }
 
 func getBlacklistHandle(w http.ResponseWriter, r *http.Request) {
-	//lang := r.FormValue["lang"]
-	count, err := strconv.Atoi(r.FormValue("count"))
-	if err != nil {
-		count = 20
-	}
-	offset, err := strconv.Atoi(r.FormValue("offset"))
-	if err != nil {
-		offset = 0
+	lang := r.FormValue("lang")
+	if lang == "" {
+		JsonError(w, "Invalid lang", 400)
+		return
 	}
 
-	blacklist := pfilter.Blacklist()
+	//count, err := strconv.Atoi(r.FormValue("count"))
+	//if err != nil {
+	//	count = 20
+	//}
+	//offset, err := strconv.Atoi(r.FormValue("offset"))
+	//if err != nil {
+	//	offset = 0
+	//}
+
+	blacklist := pfilter.Get(lang).Blacklist()
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	json.NewEncoder(w).Encode(&blacklist)
+	//println(offset, count)
+
+	resp := &BlacklistResponse{
+		Blacklist: blacklist,
+		Total:     len(blacklist),
+	}
+
+	json.NewEncoder(w).Encode(resp)
 }

@@ -1,21 +1,18 @@
 package server
 
 import (
-	"io/ioutil"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 
 	"github.com/gorilla/mux"
-	"github.com/simonz05/profanity/filter"
 )
 
 var (
 	Version = "0.0.1"
-	pfilter *filter.Filter
 	router  *mux.Router
+	pfilter *PFilter
 )
 
 func sigTrapCloser(l net.Listener) {
@@ -31,10 +28,11 @@ func sigTrapCloser(l net.Listener) {
 }
 
 func setupServer(filename string) {
-	pfilter = filter.NewFilter()
+	//pfilter = filter.NewFilter()
+	pfilter = NewPFilter()
 
 	if filename != "" {
-		loadFromFile(filename)
+		//loadFromFile(filename)
 	}
 
 	// HTTP endpoints
@@ -63,15 +61,4 @@ func ListenAndServe(laddr, filename string) error {
 	err = http.Serve(l, nil)
 	Logf("Shutting down ..")
 	return err
-}
-
-func loadFromFile(filename string) error {
-	content, err := ioutil.ReadFile(filename)
-
-	if err != nil {
-		return err
-	}
-
-	pfilter.Replace(strings.Split(strings.TrimSpace(string(content)), "\n"))
-	return nil
 }
