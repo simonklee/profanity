@@ -56,7 +56,6 @@ func printSlice(slice []string) {
 // Merge data into an asc sorted slice. Extend the slice if necessary.
 func merge(slice, data []string) []string {
 	l := len(slice)
-	//println(len(data), len(slice), cap(slice))
 
 	if l+len(data) > cap(slice) { // reallocate
 		newSlice := make([]string, l, (l + len(data)*2))
@@ -130,7 +129,6 @@ func (p *Filter) Remove(blacklist []string) error {
 		slice = append(slice[:i], slice[i+1:]...)
 	}
 
-	// nothing changed
 	if oldLen == len(slice) {
 		return nil
 	}
