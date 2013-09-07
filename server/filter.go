@@ -72,7 +72,7 @@ func sanitizeHandle(w http.ResponseWriter, r *http.Request) {
 
 	text := r.FormValue("text")
 	sanitized := pfilter.Get(lang).Sanitize(text)
-	//Logf("lang: %s, text: %s, sanitized: %s", lang, text, sanitized)
+	Logf("lang: %s, text: %s, sanitized: %s", lang, text, sanitized)
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	json.NewEncoder(w).Encode(&SanitizeResponse{Text: sanitized})
@@ -139,6 +139,8 @@ func getBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 	blacklist := pfilter.Get(lang).Blacklist()
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	//println(offset, count)
+
+	Logf("lang: %s, blacklist: %v", lang, blacklist)
 
 	resp := &BlacklistResponse{
 		Blacklist: blacklist,

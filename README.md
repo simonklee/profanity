@@ -42,7 +42,7 @@ The flags are:
 
 Create/overwrite blacklist.
 
-    POST --data "blacklist=x&blacklist=xx&blacklist=xxx" /api/1.0/blacklist/
+    POST --data "blacklist=x&blacklist=xx&blacklist=xxx" /api/1.0/blacklist/?lang=en_US
 
     HTTP/1.1 201 Created
     Date: Mon, 12 Aug 2013 09:37:17 GMT
@@ -58,11 +58,11 @@ Return current blacklist.
     Date: Mon, 12 Aug 2013 09:34:44 GMT
     Transfer-Encoding: chunked
 
-    ["x", "xx", "xxx"]    
+    {"blacklist": ["x", "xx", "xxx"], "total": 3}
 
 Update blacklist.
 
-    PUT --data "blacklist=y" /api/1.0/blacklist/
+    PUT --data "blacklist=y" /api/1.0/blacklist/?lang=en_US
 
     HTTP/1.1 200 OK
     Date: Mon, 12 Aug 2013 09:37:17 GMT
@@ -71,7 +71,7 @@ Update blacklist.
 
 Remove from blacklist.
 
-    PUT --data "blacklist=y" /api/1.0/blacklist/remove/
+    PUT --data "blacklist=y" /api/1.0/blacklist/remove/?lang=en_US
 
     HTTP/1.1 200 OK
     Date: Mon, 12 Aug 2013 09:37:17 GMT
@@ -80,11 +80,11 @@ Remove from blacklist.
 
 Sanitize text.
 
-    GET /api/1.0/sanitize/?text=foo%20bar%20xxx
+    GET /api/1.0/sanitize/?text=foo%20bar%20xxx&lang=en_US
 
     HTTP/1.1 200 OK
     Date: Mon, 12 Aug 2013 09:37:38 GMT
     Content-Type: application/json; charset=utf-8
     Content-Length: 33
 
-    {"text":"foo bar ***","lang":""}
+    {"text":"foo bar ***"}
