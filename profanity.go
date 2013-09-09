@@ -9,6 +9,7 @@ import (
 	"runtime/pprof"
 
 	"github.com/simonz05/profanity/server"
+	"github.com/simonz05/profanity/util"
 )
 
 var (
@@ -50,9 +51,9 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	if *verbose {
-		server.LogLevel = 2
+		util.LogLevel = 2
 	} else {
-		server.LogLevel = *logLevel
+		util.LogLevel = *logLevel
 	}
 
 	if *cpuprofile != "" {
