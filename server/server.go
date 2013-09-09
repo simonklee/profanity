@@ -7,12 +7,13 @@ import (
 	"os/signal"
 
 	"github.com/gorilla/mux"
+	"github.com/simonz05/profanity/util"
 )
 
 var (
-	Version = "0.0.1"
+	Version = "0.1.0"
 	router  *mux.Router
-	pfilter *PFilter
+	filters *profanityServer
 )
 
 func sigTrapCloser(l net.Listener) {
@@ -22,18 +23,13 @@ func sigTrapCloser(l net.Listener) {
 	go func() {
 		for _ = range c {
 			l.Close()
-			Logf("Closed listener %s", l.Addr())
+			util.Logf("Closed listener %s", l.Addr())
 		}
 	}()
 }
 
 func setupServer(filename string) {
-	//pfilter = filter.NewFilter()
-	pfilter = NewPFilter()
-
-	if filename != "" {
-		//loadFromFile(filename)
-	}
+	filters = newServer()
 
 	// HTTP endpoints
 	router = mux.NewRouter()
@@ -55,10 +51,10 @@ func ListenAndServe(laddr, filename string) error {
 		return err
 	}
 
-	Logf("Listen on %s", l.Addr())
+	util.Logf("Listen on %s", l.Addr())
 
 	sigTrapCloser(l)
 	err = http.Serve(l, nil)
-	Logf("Shutting down ..")
+	util.Logf("Shutting down ..")
 	return err
 }

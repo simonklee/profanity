@@ -9,6 +9,8 @@ import (
 	"strings"
 	"sync"
 	"testing"
+
+	"github.com/simonz05/profanity/util"
 )
 
 var (
@@ -18,7 +20,7 @@ var (
 )
 
 func startServer() {
-	LogLevel = 1
+	util.LogLevel = 1
 	setupServer("")
 	server = httptest.NewServer(nil)
 	serverAddr = server.Listener.Addr().String()
@@ -100,7 +102,7 @@ func blacklistHttp(t *testing.T, index int, in, out []string, method string) {
 		return
 	}
 
-	var res BlacklistResponse
+	var res blacklistResponse
 	err = json.NewDecoder(r.Body).Decode(&res)
 
 	if err != nil {
@@ -148,7 +150,7 @@ func sanitizeHttp(t *testing.T, index int, in, out string) {
 		return
 	}
 
-	res := new(SanitizeResponse)
+	res := new(sanitizeResponse)
 	err = json.NewDecoder(r.Body).Decode(res)
 
 	if err != nil {
