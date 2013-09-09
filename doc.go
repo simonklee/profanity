@@ -19,10 +19,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-// profanity is a HTTP server which implements a
-// simple API.  It exposes the `filter.Update()`,
-// `filter.Replace()`, `filter.Remove()` and
-// `filter.Sanitize()` methods.
+// `profanity` is a HTTP server which implements a simple API.
+// It exposes the `wordfilter.Wordfilter`. 
 //
 //    Usage:
 //    	profanity [flag]
@@ -34,9 +32,6 @@
 //    		help text
 //    	-http=":8080"
 //    		set bind address for the HTTP server
-//    	-wordlist=""
-//		filepath to use a '\n' separated word list which
-//		will be used as the default profanity filter
 //    	-log=0
 //		set log level
 //    	-version=false

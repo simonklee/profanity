@@ -4,8 +4,7 @@ import (
 	"github.com/simonz05/profanity/wordlist"
 )
 
-// Wordfilter is a wordlist and filter. It's a proxy structure which makes sure
-// to reload Replacer every time the wordlist updates.
+// Wordfilter implements the ProfanityFilter interface.
 type Wordfilter struct {
 	List   wordlist.Wordlist
 	Filter *Replacer
