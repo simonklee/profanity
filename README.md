@@ -51,7 +51,7 @@ Create/overwrite blacklist.
 
 Return current blacklist.
 
-    GET /api/1.0/blacklist/?lang=en_US
+    GET /api/1.0/blacklist/?lang=en_US&count=10&offset=0
 
     HTTP/1.1 200 OK
     Content-Type: application/json; charset=utf-8

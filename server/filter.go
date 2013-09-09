@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	//"strconv"
+	"strconv"
 	"github.com/simonz05/profanity/filter"
 	"sync"
 )
@@ -127,18 +127,19 @@ func getBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//count, err := strconv.Atoi(r.FormValue("count"))
-	//if err != nil {
-	//	count = 20
-	//}
-	//offset, err := strconv.Atoi(r.FormValue("offset"))
-	//if err != nil {
-	//	offset = 0
-	//}
+	count, err := strconv.Atoi(r.FormValue("count"))
+	if err != nil {
+		count = 20
+	}
+
+	offset, err := strconv.Atoi(r.FormValue("offset"))
+	if err != nil {
+		offset = 0
+	}
 
 	blacklist := pfilter.Get(lang).Blacklist()
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	//println(offset, count)
+	println("TODO: implement: ", offset, count)
 
 	Logf("lang: %s, blacklist: %v", lang, blacklist)
 
