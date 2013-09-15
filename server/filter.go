@@ -35,7 +35,7 @@ func (s *profanityServer) addLang(lang string) wordfilter.ProfanityFilter {
 
 	// TODO: get from config
 	c, _ := db.Open("redis://:@localhost:6379/15")
-	list := wordlist.NewRedisWordlist(c, "en_US")
+	list := wordlist.NewRedisWordlist(c, lang)
 	f := wordfilter.NewWordfilter(list)
 	m[lang] = f
 	s.lang = &m
@@ -89,6 +89,7 @@ func sanitizeHandle(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateBlacklistHandle(w http.ResponseWriter, r *http.Request) {
+	util.Logf("update blacklist")
 	lang := r.FormValue("lang")
 	if lang == "" {
 		jsonError(w, "Invalid lang", 400)
@@ -131,6 +132,7 @@ func removeBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 }
 
 func getBlacklistHandle(w http.ResponseWriter, r *http.Request) {
+	util.Logf("get lang")
 	lang := r.FormValue("lang")
 	if lang == "" {
 		jsonError(w, "Invalid lang", 400)
@@ -147,6 +149,7 @@ func getBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 		offset = 0
 	}
 
+	util.Logf("lang: %s, count: %d, offset: %d", lang, count, offset)
 	// TODO: handle err
 	filter := filters.get(lang)
 	list, _ := filter.Get(count, offset)
