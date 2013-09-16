@@ -62,8 +62,12 @@ func testBackend(t *testing.T, test *TestCase) {
 		t.Fatalf("%s expected %d got %d, err %v", test, expCnt, len(values), err)
 	}
 
-	if len(words) > 2 {
-		if values, err := list.Get(1, 1); len(values) != 1 || err != nil {
+	if len(words) > 10 {
+		if values, err := list.Get(5, 0); len(values) != 5 || err != nil {
+			t.Fatalf("%s expected 1 got %d, err %v", test, len(values), err)
+		}
+
+		if values, err := list.Get(5, 5); len(values) != 5 || err != nil {
 			t.Fatalf("%s expected 1 got %d, err %v", test, len(values), err)
 		}
 	}

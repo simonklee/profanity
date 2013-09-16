@@ -35,6 +35,23 @@ type BlacklistTest struct {
 	method  string
 }
 
+func TestOffsetRegression(t *testing.T) {
+	once.Do(startServer)
+
+	test := &BlacklistTest{
+		in: []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"}, 
+		out: []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"}, 
+		method: "POST",
+	}
+
+	blacklistHttp(t, 0, test.in, test.out, test.method)
+	blacklistGet(t, 5, 0, test.out[:5])
+	blacklistGet(t, 5, 5, test.out[5:])
+	blacklistGet(t, 1, 1, test.out[1:2])
+	blacklistGet(t, 1, 2, test.out[2:3])
+	blacklistGet(t, 8, 9, test.out[9:])
+}
+
 func TestBlacklist(t *testing.T) {
 	once.Do(startServer)
 
@@ -50,6 +67,37 @@ func TestBlacklist(t *testing.T) {
 
 	for i, x := range tests {
 		blacklistHttp(t, i, x.in, x.out, x.method)
+	}
+}
+
+func blacklistGet(t *testing.T, count, offset int, out []string) {
+	r, err := http.Get(fmt.Sprintf("http://%s/api/1.0/blacklist/?lang=%s&count=%d&offset=%d", serverAddr, "en_US", count, offset))
+
+	if err != nil {
+		t.Fatalf("error getting: %s", err)
+		return
+	}
+
+	var res blacklistResponse
+	err = json.NewDecoder(r.Body).Decode(&res)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	util.Logf("res: %v", res)
+	expLen := util.IntMin(util.IntMax(res.Total - offset, 0), count)
+
+	if len(res.Blacklist) != expLen {
+		t.Fatalf("%d != %d", len(res.Blacklist), expLen)
+	}
+
+	if out != nil {
+		for i := 0; i < len(res.Blacklist); i++ {
+			if res.Blacklist[i] != out[i] {
+				t.Fatalf("%s != %s", res.Blacklist[i], out[i])
+			}
+		}
 	}
 }
 
@@ -95,31 +143,7 @@ func blacklistHttp(t *testing.T, index int, in, out []string, method string) {
 		}
 	}
 
-	r, err = http.Get(fmt.Sprintf("http://%s/api/1.0/blacklist/?lang=%s", serverAddr, "en_US"))
-
-	if err != nil {
-		t.Fatalf("error getting: %s", err)
-		return
-	}
-
-	var res blacklistResponse
-	err = json.NewDecoder(r.Body).Decode(&res)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	//Logf("res: %s", res)
-
-	if len(res.Blacklist) != len(out) {
-		t.Fatalf("%d != %d", len(res.Blacklist), len(out))
-	}
-
-	for i := 0; i < len(res.Blacklist); i++ {
-		if res.Blacklist[i] != out[i] {
-			t.Fatalf("%s != %s", res.Blacklist[i], out[i])
-		}
-	}
+	blacklistGet(t, len(out), 0, out)
 }
 
 func TestSanitize(t *testing.T) {

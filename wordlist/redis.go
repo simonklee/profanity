@@ -32,7 +32,7 @@ func (w *RedisWordlist) Count() (int, error) {
 func (w *RedisWordlist) Get(count, offset int) ([]string, error) {
 	conn := w.conn.Get()
 	defer conn.Close()
-	starting_offset := util.IntMax(offset*count, 0)
+	starting_offset := util.IntMax(offset, 0)
 	ending_offset := util.IntMax((starting_offset+count)-1, 1)
 	return redis.Strings(conn.Do("ZRANGE", w.key, starting_offset, ending_offset))
 }

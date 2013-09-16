@@ -132,7 +132,7 @@ func removeBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 }
 
 func getBlacklistHandle(w http.ResponseWriter, r *http.Request) {
-	util.Logf("get lang")
+	util.Logf("GET blacklist")
 	lang := r.FormValue("lang")
 	if lang == "" {
 		jsonError(w, "Invalid lang", 400)
