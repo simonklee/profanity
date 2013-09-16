@@ -193,6 +193,8 @@ func sanitizeHttp(t *testing.T, index int, in, out string) {
 }
 
 func BenchmarkServer(b *testing.B) {
+	once.Do(startServer)
+
 	in := []string{"a", "b", "c", "d", "e", "f", "g", "h", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t"}
 	values := url.Values{}
 
