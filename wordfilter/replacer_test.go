@@ -12,9 +12,6 @@ type ProfanityTest struct {
 }
 
 func TestReplacer(t *testing.T) {
-	pfilter := NewReplacer()
-	pfilter.Reload(smallList)
-
 	tests := []*ProfanityTest{
 		{"foo", "foo"},
 		{"foo fuck", "foo ****"},
@@ -23,29 +20,32 @@ func TestReplacer(t *testing.T) {
 		{"eff", "***"},
 	}
 
+	repl := NewReplacer()
+	repl.Reload(smallList)
+
 	for i, x := range tests {
-		if out := pfilter.Sanitize(x.in); out != x.out {
+		if out := repl.Replace(x.in); out != x.out {
 			t.Fatalf("#%d: expected %s, got %s", i, x.out, out)
 		}
 	}
 }
 
 func BenchmarkBoyer(b *testing.B) {
-	pfilter := NewReplacer()
-	pfilter.Reload(largeList)
+	repl := NewReplacer()
+	repl.Reload(largeList)
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		pfilter.Sanitize("EFG")
+		repl.Replace("EFG")
 	}
 }
 
 func BenchmarkSmallList(b *testing.B) {
-	pfilter := NewReplacer()
-	pfilter.Reload(smallList)
+	repl := NewReplacer()
+	repl.Reload(smallList)
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		pfilter.Sanitize("foo fuck")
+		repl.Replace("foo fuck")
 	}
 }
