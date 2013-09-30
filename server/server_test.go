@@ -193,9 +193,10 @@ func sanitizeHttp(t *testing.T, index int, in, out string) {
 }
 
 func BenchmarkServer(b *testing.B) {
-	once.Do(startServer)
+	//once.Do(startServer)
+	serverAddr := "localhost:8080"
 
-	in := []string{"a", "b", "c", "d", "e", "f", "g", "h", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t"}
+	in := []string{"@", "@A", "@AB", "A", "AB", "ABC", "B", "BC", "BCD", "C", "CD", "CDE", "D", "DE", "DEF", "E", "EF", "EFG", "F", "FG", "FGH", "G", "GH", "GHI", "H", "HI", "HIJ", "I", "IJ", "IJK", "J", "JK", "JKL", "K", "KL", "KLM", "L", "LM", "LMN", "M", "MN", "MNO", "N", "NO", "NOP", "O", "OP", "OPQ", "P", "PQ", "PQR", "Q", "QR", "QRS", "R", "RS", "RST", "S", "ST", "STU", "T", "TU", "TUV", "U", "UV", "UVW", "V", "VW", "VWX", "W", "WX", "WXY", "X", "XY", "XYZ", "Y", "YZ", "YZB", "Z", "ZA", "ZAB"}
 	values := url.Values{}
 
 	for _, s := range in {
@@ -203,7 +204,7 @@ func BenchmarkServer(b *testing.B) {
 	}
 
 	params := strings.NewReader(values.Encode())
-	req, _ := http.NewRequest("POST", fmt.Sprintf("http://%s/api/1.0/blacklist/", serverAddr), params)
+	req, _ := http.NewRequest("POST", fmt.Sprintf("http://%s/api/1.0/blacklist/?lang=en_US", serverAddr), params)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}
@@ -216,16 +217,21 @@ func BenchmarkServer(b *testing.B) {
 
 	values = url.Values{
 		"text": in,
+		"lang": []string{"en_US"},
 	}
 	uri := fmt.Sprintf("http://%s/api/1.0/sanitize/?%s", serverAddr, values.Encode())
 
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		_, err := http.Get(uri)
+		res, err := http.Get(uri)
+
+		if res.StatusCode != 200 {
+			b.Fatalf("error sanitize: expected status OK 200, got %d", res.StatusCode)
+		}
 
 		if err != nil {
-			b.Fatalf("error posting: %s", err)
+			b.Fatalf("error sanitize: %s", err)
 		}
 	}
 }

@@ -242,6 +242,11 @@ type genericReplacer struct {
 
 func makeGenericReplacer(oldnew []string) *genericReplacer {
 	r := new(genericReplacer)
+
+	for i := 0; i < len(oldnew); i++ {
+		oldnew[i] = strings.ToLower(oldnew[i])
+	}
+
 	// Find each byte used, then assign them each an index.
 	for i := 0; i < len(oldnew); i += 2 {
 		key := oldnew[i]
