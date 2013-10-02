@@ -37,6 +37,7 @@ func (s *profanityFilters) addLang(lang string) wordfilter.ProfanityFilter {
 	m[lang] = f
 	s.lang = &m
 	s.mu.Unlock()
+	f.Reload()
 	return f
 }
 

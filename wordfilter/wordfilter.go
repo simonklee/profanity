@@ -10,6 +10,7 @@ import (
 type ProfanityFilter interface {
 	wordlist.Wordlist
 	Sanitize(v string) string
+	Reload() error
 }
 
 // Wordfilter implements the ProfanityFilter interface.
@@ -41,7 +42,7 @@ func (w *Wordfilter) Set(words []string) error {
 		return err
 	}
 
-	return w.reload()
+	return w.Reload()
 }
 
 // Delete words
@@ -50,7 +51,7 @@ func (w *Wordfilter) Delete(words []string) error {
 		return err
 	}
 
-	return w.reload()
+	return w.Reload()
 }
 
 // Replace wordlist with `words`
@@ -59,10 +60,10 @@ func (w *Wordfilter) Replace(words []string) error {
 		return err
 	}
 
-	return w.reload()
+	return w.Reload()
 }
 
-func (w *Wordfilter) reload() error {
+func (w *Wordfilter) Reload() error {
 	cnt, err := w.List.Count()
 
 	if err != nil {
