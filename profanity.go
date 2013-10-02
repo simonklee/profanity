@@ -13,11 +13,10 @@ import (
 )
 
 var (
-	verbose  = flag.Bool("v", false, "verbose mode")
-	help     = flag.Bool("h", false, "show help text")
-	laddr    = flag.String("http", ":8080", "set bind address for the HTTP server")
-	wordlist = flag.String("wordlist", "", `filepath to use a '\\n' separated word list 
-		which will be used as the default profanity filter`)
+	verbose    = flag.Bool("v", false, "verbose mode")
+	help       = flag.Bool("h", false, "show help text")
+	laddr      = flag.String("http", ":8080", "set bind address for the HTTP server")
+	dsn        = flag.String("redis", "redis://:@localhost:6379/15", "Redis data source name")
 	logLevel   = flag.Int("log", 0, "set log level")
 	version    = flag.Bool("version", false, "show version number and exit")
 	cpuprofile = flag.String("debug.cpuprofile", "", "write cpu profile to file")
@@ -65,7 +64,7 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 
-	err := server.ListenAndServe(*laddr, *wordlist)
+	err := server.ListenAndServe(*laddr, *dsn)
 
 	if err != nil {
 		log.Println(err)

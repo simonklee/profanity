@@ -7,13 +7,15 @@ import (
 	"os/signal"
 
 	"github.com/gorilla/mux"
+	"github.com/simonz05/profanity/db"
 	"github.com/simonz05/profanity/util"
 )
 
 var (
 	Version = "0.1.0"
 	router  *mux.Router
-	filters *profanityServer
+	filters *profanityFilters
+	dbConn  db.Conn
 )
 
 func sigTrapCloser(l net.Listener) {
@@ -28,8 +30,14 @@ func sigTrapCloser(l net.Listener) {
 	}()
 }
 
-func setupServer(filename string) {
-	filters = newServer()
+func setupServer(dsn string) (err error) {
+	dbConn, err = db.Open(dsn)
+
+	if err != nil {
+		return
+	}
+
+	filters = newProfanityFilters()
 
 	// HTTP endpoints
 	router = mux.NewRouter()
@@ -39,11 +47,11 @@ func setupServer(filename string) {
 	router.HandleFunc("/api/1.0/blacklist/", getBlacklistHandle).Methods("GET").Name("blacklist")
 	router.StrictSlash(false)
 	http.Handle("/", router)
-
+	return
 }
 
-func ListenAndServe(laddr, filename string) error {
-	setupServer(filename)
+func ListenAndServe(laddr, dsn string) error {
+	setupServer(dsn)
 
 	l, err := net.Listen("tcp", laddr)
 

@@ -7,25 +7,24 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/simonz05/profanity/db"
 	"github.com/simonz05/profanity/util"
-	"github.com/simonz05/profanity/wordlist"
 	"github.com/simonz05/profanity/wordfilter"
+	"github.com/simonz05/profanity/wordlist"
 )
 
-type profanityServer struct {
-	lang  *map[string]wordfilter.ProfanityFilter
-	mu sync.RWMutex
+type profanityFilters struct {
+	lang *map[string]wordfilter.ProfanityFilter
+	mu   sync.RWMutex
 }
 
-func newServer() *profanityServer {
+func newProfanityFilters() *profanityFilters {
 	m := new(map[string]wordfilter.ProfanityFilter)
-	return &profanityServer{
+	return &profanityFilters{
 		lang: m,
 	}
 }
 
-func (s *profanityServer) addLang(lang string) wordfilter.ProfanityFilter {
+func (s *profanityFilters) addLang(lang string) wordfilter.ProfanityFilter {
 	s.mu.Lock()
 	m := make(map[string]wordfilter.ProfanityFilter, len(*s.lang))
 
@@ -33,9 +32,7 @@ func (s *profanityServer) addLang(lang string) wordfilter.ProfanityFilter {
 		m[k] = v
 	}
 
-	// TODO: get from config
-	c, _ := db.Open("redis://:@localhost:6379/15")
-	list := wordlist.NewRedisWordlist(c, lang)
+	list := wordlist.NewRedisWordlist(dbConn, lang)
 	f := wordfilter.NewWordfilter(list)
 	m[lang] = f
 	s.lang = &m
@@ -43,7 +40,7 @@ func (s *profanityServer) addLang(lang string) wordfilter.ProfanityFilter {
 	return f
 }
 
-func (s *profanityServer) get(lang string) wordfilter.ProfanityFilter {
+func (s *profanityFilters) get(lang string) wordfilter.ProfanityFilter {
 	f, ok := (*s.lang)[lang]
 
 	if !ok {

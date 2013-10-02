@@ -39,8 +39,8 @@ func TestOffsetRegression(t *testing.T) {
 	once.Do(startServer)
 
 	test := &BlacklistTest{
-		in: []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"}, 
-		out: []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"}, 
+		in:     []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"},
+		out:    []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"},
 		method: "POST",
 	}
 
@@ -86,7 +86,7 @@ func blacklistGet(t *testing.T, count, offset int, out []string) {
 	}
 
 	util.Logf("res: %v", res)
-	expLen := util.IntMin(util.IntMax(res.Total - offset, 0), count)
+	expLen := util.IntMin(util.IntMax(res.Total-offset, 0), count)
 
 	if len(res.Blacklist) != expLen {
 		t.Fatalf("%d != %d", len(res.Blacklist), expLen)
