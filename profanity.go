@@ -3,21 +3,18 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"runtime"
 	"runtime/pprof"
 
 	"github.com/simonz05/profanity/server"
-	"github.com/simonz05/profanity/util"
+	"github.com/simonz05/util/log"
 )
 
 var (
-	verbose    = flag.Bool("v", false, "verbose mode")
 	help       = flag.Bool("h", false, "show help text")
-	laddr      = flag.String("http", ":8080", "set bind address for the HTTP server")
+	laddr      = flag.String("http", ":6061", "set bind address for the HTTP server")
 	dsn        = flag.String("redis", "redis://:@localhost:6379/15", "Redis data source name")
-	logLevel   = flag.Int("log", 0, "set log level")
 	version    = flag.Bool("version", false, "show version number and exit")
 	cpuprofile = flag.String("debug.cpuprofile", "", "write cpu profile to file")
 )
@@ -31,6 +28,7 @@ func usage() {
 func main() {
 	flag.Usage = usage
 	flag.Parse()
+	log.Println("Start")
 
 	if *version {
 		fmt.Fprintln(os.Stderr, server.Version)
@@ -49,12 +47,6 @@ func main() {
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	if *verbose {
-		util.LogLevel = 2
-	} else {
-		util.LogLevel = *logLevel
-	}
-
 	if *cpuprofile != "" {
 		f, err := os.Create(*cpuprofile)
 		if err != nil {
@@ -67,6 +59,6 @@ func main() {
 	err := server.ListenAndServe(*laddr, *dsn)
 
 	if err != nil {
-		log.Println(err)
+		log.Errorln(err)
 	}
 }

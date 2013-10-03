@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/simonz05/profanity/util"
+	"github.com/simonz05/util/log"
 	"github.com/simonz05/profanity/wordfilter"
 	"github.com/simonz05/profanity/wordlist"
 )
@@ -80,14 +80,14 @@ func sanitizeHandle(w http.ResponseWriter, r *http.Request) {
 
 	text := r.FormValue("text")
 	sanitized := filters.get(lang).Sanitize(text)
-	util.Logf("lang: %s, text: %s, sanitized: %s", lang, text, sanitized)
+	log.Printf("lang: %s, text: %s, sanitized: %s", lang, text, sanitized)
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	json.NewEncoder(w).Encode(&sanitizeResponse{Text: sanitized})
 }
 
 func updateBlacklistHandle(w http.ResponseWriter, r *http.Request) {
-	util.Logf("update blacklist")
+	log.Printf("update blacklist")
 	lang := r.FormValue("lang")
 	if lang == "" {
 		jsonError(w, "Invalid lang", 400)
@@ -130,7 +130,7 @@ func removeBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 }
 
 func getBlacklistHandle(w http.ResponseWriter, r *http.Request) {
-	util.Logf("GET blacklist")
+	log.Printf("GET blacklist")
 	lang := r.FormValue("lang")
 	if lang == "" {
 		jsonError(w, "Invalid lang", 400)
@@ -147,7 +147,7 @@ func getBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 		offset = 0
 	}
 
-	util.Logf("lang: %s, count: %d, offset: %d", lang, count, offset)
+	log.Printf("lang: %s, count: %d, offset: %d", lang, count, offset)
 	// TODO: handle err
 	filter := filters.get(lang)
 	list, _ := filter.Get(count, offset)

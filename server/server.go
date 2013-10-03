@@ -8,7 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/simonz05/profanity/db"
-	"github.com/simonz05/profanity/util"
+	"github.com/simonz05/util/log"
 )
 
 var (
@@ -25,7 +25,7 @@ func sigTrapCloser(l net.Listener) {
 	go func() {
 		for _ = range c {
 			l.Close()
-			util.Logf("Closed listener %s", l.Addr())
+			log.Printf("Closed listener %s", l.Addr())
 		}
 	}()
 }
@@ -59,10 +59,10 @@ func ListenAndServe(laddr, dsn string) error {
 		return err
 	}
 
-	util.Logf("Listen on %s", l.Addr())
+	log.Printf("Listen on %s", l.Addr())
 
 	sigTrapCloser(l)
 	err = http.Serve(l, nil)
-	util.Logf("Shutting down ..")
+	log.Print("Shutting down ..")
 	return err
 }
