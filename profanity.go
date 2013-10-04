@@ -41,8 +41,7 @@ func main() {
 	}
 
 	if *laddr == "" {
-		fmt.Fprintln(os.Stderr, "listen address required")
-		os.Exit(1)
+		log.Fatal("listen address required")
 	}
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
@@ -59,6 +58,6 @@ func main() {
 	err := server.ListenAndServe(*laddr, *dsn)
 
 	if err != nil {
-		log.Errorln(err)
+		log.Println(err)
 	}
 }
