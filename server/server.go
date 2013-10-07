@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 
 	"github.com/gorilla/mux"
 	"github.com/simonz05/profanity/db"
@@ -20,7 +21,7 @@ var (
 
 func sigTrapCloser(l net.Listener) {
 	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
+	signal.Notify(c, syscall.SIGINT, syscall.SIGKILL, syscall.SIGTERM, syscall.SIGHUP)
 
 	go func() {
 		for _ = range c {
