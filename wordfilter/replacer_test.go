@@ -11,16 +11,38 @@ type ProfanityTest struct {
 	in, out string
 }
 
-func TestReplacer(t *testing.T) {
+func TestStringReplacer(t *testing.T) {
 	tests := []*ProfanityTest{
 		{"foo", "foo"},
 		{"foo fuck", "foo ****"},
+		{"foo fUCK", "foo ****"},
 		{"foo uck", "foo uck"},
 		{"foo ffuck", "foo f****"},
 		{"eff", "***"},
 	}
 
-	repl := NewReplacer()
+	repl := NewStringReplacer()
+	repl.Reload(smallList)
+
+	for i, x := range tests {
+		if out := repl.Replace(x.in); out != x.out {
+			t.Fatalf("#%d: expected %s, got %s", i, x.out, out)
+		}
+	}
+}
+
+func TestSetReplacer(t *testing.T) {
+	tests := []*ProfanityTest{
+		{"foo", "foo"},
+		{"foo fuck", "foo ****"},
+		{"foo fUCk", "foo ****"},
+		{"foo uck", "foo uck"},
+		{"foo ffuck", "foo ffuck"},
+		{"eff", "***"},
+		{"eff\n", "***\n"},
+	}
+
+	repl := NewSetReplacer()
 	repl.Reload(smallList)
 
 	for i, x := range tests {
@@ -31,7 +53,7 @@ func TestReplacer(t *testing.T) {
 }
 
 func BenchmarkBoyer(b *testing.B) {
-	repl := NewReplacer()
+	repl := NewStringReplacer()
 	repl.Reload(largeList)
 	b.ResetTimer()
 
@@ -40,12 +62,52 @@ func BenchmarkBoyer(b *testing.B) {
 	}
 }
 
-func BenchmarkSmallList(b *testing.B) {
-	repl := NewReplacer()
+func BenchmarkSmallBoyerList(b *testing.B) {
+	repl := NewStringReplacer()
 	repl.Reload(smallList)
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
 		repl.Replace("foo fuck")
+	}
+}
+
+func BenchmarkSet(b *testing.B) {
+	repl := NewSetReplacer()
+	repl.Reload(largeList)
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		repl.Replace("EFG")
+	}
+}
+
+func BenchmarkSmallSetList(b *testing.B) {
+	repl := NewSetReplacer()
+	repl.Reload(smallList)
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		repl.Replace("foo fuck")
+	}
+}
+
+func BenchmarkLargeInputString(b *testing.B) {
+	repl := NewStringReplacer()
+	repl.Reload(smallList)
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		repl.Replace("foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck")
+	}
+}
+
+func BenchmarkLargeInputSet(b *testing.B) {
+	repl := NewSetReplacer()
+	repl.Reload(smallList)
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		repl.Replace("foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck foo fuck")
 	}
 }

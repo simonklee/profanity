@@ -16,13 +16,13 @@ type ProfanityFilter interface {
 // Wordfilter implements the ProfanityFilter interface.
 type Wordfilter struct {
 	List     wordlist.Wordlist
-	Replacer *Replacer
+	Replacer Replacer
 }
 
 func NewWordfilter(list wordlist.Wordlist) *Wordfilter {
 	return &Wordfilter{
 		List:     list,
-		Replacer: NewReplacer(),
+		Replacer: NewSetReplacer(),
 	}
 }
 
