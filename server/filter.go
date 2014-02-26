@@ -150,10 +150,21 @@ func getBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 	log.Printf("lang: %s, count: %d, offset: %d", lang, count, offset)
 	// TODO: handle err
 	filter := filters.get(lang)
-	list, _ := filter.Get(count, offset)
-	cnt, _ := filter.Count()
+	list, err := filter.Get(count, offset)
+	if err != nil {
+		log.Errorln(err)
+	}
+	cnt, err := filter.Count()
+	if err != nil {
+		log.Errorln(err)
+	}
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
+	if list == nil {
+		list = make([]string, 0)
+		cnt = 0
+	}
 
 	resp := &blacklistResponse{
 		Blacklist: list,
