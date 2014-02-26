@@ -71,7 +71,7 @@ func TestBlacklist(t *testing.T) {
 }
 
 func blacklistGet(t *testing.T, count, offset int, out []string) {
-	r, err := http.Get(fmt.Sprintf("http://%s/api/1.0/blacklist/?lang=%s&count=%d&offset=%d", serverAddr, "en_US", count, offset))
+	r, err := http.Get(fmt.Sprintf("http://%s/v1/profanity/blacklist/?lang=%s&count=%d&offset=%d", serverAddr, "en_US", count, offset))
 
 	if err != nil {
 		t.Fatalf("error getting: %s", err)
@@ -113,9 +113,9 @@ func blacklistHttp(t *testing.T, index int, in, out []string, method string) {
 	params := strings.NewReader(values.Encode())
 	if method == "DELETE" {
 		method = "PUT"
-		uri = fmt.Sprintf("http://%s/api/1.0/blacklist/remove/", serverAddr)
+		uri = fmt.Sprintf("http://%s/v1/profanity/blacklist/remove/", serverAddr)
 	} else {
-		uri = fmt.Sprintf("http://%s/api/1.0/blacklist/", serverAddr)
+		uri = fmt.Sprintf("http://%s/v1/profanity/blacklist/", serverAddr)
 	}
 
 	req, _ := http.NewRequest(method, uri, params)
@@ -167,7 +167,7 @@ func sanitizeHttp(t *testing.T, index int, in, out string) {
 		"lang": {"en_US"},
 	}
 
-	r, err := http.Get(fmt.Sprintf("http://%s/api/1.0/sanitize/?%s", serverAddr, values.Encode()))
+	r, err := http.Get(fmt.Sprintf("http://%s/v1/profanity/sanitize/?%s", serverAddr, values.Encode()))
 
 	if err != nil {
 		t.Fatalf("error posting: %s", err)
@@ -204,7 +204,7 @@ func BenchmarkServer(b *testing.B) {
 	}
 
 	params := strings.NewReader(values.Encode())
-	req, _ := http.NewRequest("POST", fmt.Sprintf("http://%s/api/1.0/blacklist/?lang=en_US", serverAddr), params)
+	req, _ := http.NewRequest("POST", fmt.Sprintf("http://%s/v1/profanity/blacklist/?lang=en_US", serverAddr), params)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}
@@ -219,7 +219,7 @@ func BenchmarkServer(b *testing.B) {
 		"text": in,
 		"lang": []string{"en_US"},
 	}
-	uri := fmt.Sprintf("http://%s/api/1.0/sanitize/?%s", serverAddr, values.Encode())
+	uri := fmt.Sprintf("http://%s/v1/profanity/sanitize/?%s", serverAddr, values.Encode())
 
 	b.ResetTimer()
 
