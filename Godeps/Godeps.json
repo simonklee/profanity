@@ -1,0 +1,29 @@
+{
+	"ImportPath": "github.com/simonz05/profanity",
+	"GoVersion": "go1.2",
+	"Packages": [
+		"."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/garyburd/redigo/redis",
+			"Rev": "856744a0d55bbc9f94897dcd29ed48a0d978feed"
+		},
+		{
+			"ImportPath": "github.com/gorilla/context",
+			"Rev": "1be7a086a5fd6440ef16fe96baeda0c78282b980"
+		},
+		{
+			"ImportPath": "github.com/gorilla/mux",
+			"Rev": "9ede152210fa25c1377d33e867cb828c19316445"
+		},
+		{
+			"ImportPath": "github.com/simonz05/util/log",
+			"Rev": "4f5b4cc8a5260760d06320635bf452f5ee34e48d"
+		},
+		{
+			"ImportPath": "github.com/simonz05/util/raven",
+			"Rev": "4f5b4cc8a5260760d06320635bf452f5ee34e48d"
+		}
+	]
+}
