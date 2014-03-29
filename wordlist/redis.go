@@ -3,23 +3,23 @@ package wordlist
 import (
 	"fmt"
 
-	"github.com/garyburd/redigo/redis"
+	"github.com/simonz05/profanity/third_party/github.com/garyburd/redigo/redis"
 	"github.com/simonz05/profanity/db"
 	"github.com/simonz05/profanity/util"
 )
 
 // RedisWordlist is a redis backed wordlist implementation.
 type RedisWordlist struct {
-	lang string
-	key  string
-	conn db.Conn
+	lang	string
+	key	string
+	conn	db.Conn
 }
 
 func NewRedisWordlist(conn db.Conn, lang string) *RedisWordlist {
 	return &RedisWordlist{
-		lang: lang,
-		key:  fmt.Sprintf("profanity:wordlist:%s", lang),
-		conn: conn,
+		lang:	lang,
+		key:	fmt.Sprintf("profanity:wordlist:%s", lang),
+		conn:	conn,
 	}
 }
 

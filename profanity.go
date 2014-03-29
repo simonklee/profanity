@@ -8,7 +8,7 @@ import (
 	"runtime/pprof"
 
 	"github.com/simonz05/profanity/server"
-	"github.com/simonz05/util/log"
+	"github.com/simonz05/profanity/third_party/github.com/simonz05/util/log"
 )
 
 var (

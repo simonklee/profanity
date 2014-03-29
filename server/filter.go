@@ -9,12 +9,12 @@ import (
 
 	"github.com/simonz05/profanity/wordfilter"
 	"github.com/simonz05/profanity/wordlist"
-	"github.com/simonz05/util/log"
+	"github.com/simonz05/profanity/third_party/github.com/simonz05/util/log"
 )
 
 type profanityFilters struct {
-	lang *map[string]wordfilter.ProfanityFilter
-	mu   sync.RWMutex
+	lang	*map[string]wordfilter.ProfanityFilter
+	mu	sync.RWMutex
 }
 
 func newProfanityFilters() *profanityFilters {
@@ -58,8 +58,8 @@ func jsonError(w http.ResponseWriter, error string, code int) {
 }
 
 type errorResponse struct {
-	Error string `json:error`
-	Code  int    `json:code`
+	Error	string	`json:error`
+	Code	int	`json:code`
 }
 
 type sanitizeResponse struct {
@@ -67,8 +67,8 @@ type sanitizeResponse struct {
 }
 
 type blacklistResponse struct {
-	Blacklist []string `json:"blacklist"`
-	Total     int      `json:"total"`
+	Blacklist	[]string	`json:"blacklist"`
+	Total		int		`json:"total"`
 }
 
 func sanitizeHandle(w http.ResponseWriter, r *http.Request) {
@@ -167,8 +167,8 @@ func getBlacklistHandle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp := &blacklistResponse{
-		Blacklist: list,
-		Total:     cnt,
+		Blacklist:	list,
+		Total:		cnt,
 	}
 
 	json.NewEncoder(w).Encode(resp)

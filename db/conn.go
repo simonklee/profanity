@@ -5,19 +5,19 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/garyburd/redigo/redis"
+	"github.com/simonz05/profanity/third_party/github.com/garyburd/redigo/redis"
 )
 
 type DB struct {
-	cfg  *config
-	pool *redis.Pool
+	cfg	*config
+	pool	*redis.Pool
 }
 
 type config struct {
-	user     string
-	password string
-	db       uint8
-	addr     string
+	user		string
+	password	string
+	db		uint8
+	addr		string
 }
 
 type Conn interface {
@@ -69,12 +69,12 @@ func Open(dataSourceName string) (Conn, error) {
 	}
 
 	db.pool = &redis.Pool{
-		MaxIdle:     128,
-		IdleTimeout: 60 * time.Second,
+		MaxIdle:	128,
+		IdleTimeout:	60 * time.Second,
 		Dial: func() (redis.Conn, error) {
 			return db.dial()
 		},
-		TestOnBorrow: nil,
+		TestOnBorrow:	nil,
 	}
 	return db, nil
 }

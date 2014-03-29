@@ -7,16 +7,16 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/gorilla/mux"
+	"github.com/simonz05/profanity/third_party/github.com/gorilla/mux"
 	"github.com/simonz05/profanity/db"
-	"github.com/simonz05/util/log"
+	"github.com/simonz05/profanity/third_party/github.com/simonz05/util/log"
 )
 
 var (
-	Version = "0.1.0"
-	router  *mux.Router
-	filters *profanityFilters
-	dbConn  db.Conn
+	Version	= "0.1.0"
+	router	*mux.Router
+	filters	*profanityFilters
+	dbConn	db.Conn
 )
 
 func sigTrapCloser(l net.Listener) {
