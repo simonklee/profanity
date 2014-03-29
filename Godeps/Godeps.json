@@ -2,7 +2,7 @@
 	"ImportPath": "github.com/simonz05/profanity",
 	"GoVersion": "go1.2",
 	"Packages": [
-		"."
+		"./..."
 	],
 	"Deps": [
 		{
@@ -19,11 +19,11 @@
 		},
 		{
 			"ImportPath": "github.com/simonz05/util/log",
-			"Rev": "4f5b4cc8a5260760d06320635bf452f5ee34e48d"
+			"Rev": "0a04a5e26bb8b75297b8b1328c82555018d1cfa7"
 		},
 		{
 			"ImportPath": "github.com/simonz05/util/raven",
-			"Rev": "4f5b4cc8a5260760d06320635bf452f5ee34e48d"
+			"Rev": "0a04a5e26bb8b75297b8b1328c82555018d1cfa7"
 		}
 	]
 }
