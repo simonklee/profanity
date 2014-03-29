@@ -29,8 +29,8 @@ import (
 )
 
 var writeTests = []struct {
-	args		[]interface{}
-	expected	string
+	args     []interface{}
+	expected string
 }{
 	{
 		[]interface{}{"SET", "foo", "bar"},
@@ -87,8 +87,8 @@ func TestWrite(t *testing.T) {
 var errorSentinel = &struct{}{}
 
 var readTests = []struct {
-	reply		string
-	expected	interface{}
+	reply    string
+	expected interface{}
 }{
 	{
 		"+OK\r\n",
@@ -139,8 +139,8 @@ var readTests = []struct {
 func TestRead(t *testing.T) {
 	for _, tt := range readTests {
 		rw := bufio.ReadWriter{
-			Reader:	bufio.NewReader(strings.NewReader(tt.reply)),
-			Writer:	bufio.NewWriter(nil),	// writer need to support Flush
+			Reader: bufio.NewReader(strings.NewReader(tt.reply)),
+			Writer: bufio.NewWriter(nil), // writer need to support Flush
 		}
 		c := redis.NewConnBufio(rw)
 		actual, err := c.Receive()
@@ -208,8 +208,8 @@ func dialt(t *testing.T) redis.Conn {
 }
 
 var testCommands = []struct {
-	args		[]interface{}
-	expected	interface{}
+	args     []interface{}
+	expected interface{}
 }{
 	{
 		[]interface{}{"PING"},

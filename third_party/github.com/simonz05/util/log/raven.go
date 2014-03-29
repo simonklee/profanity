@@ -12,9 +12,9 @@ import (
 )
 
 type ravenLogger struct {
-	l	*log.Logger
-	sev	Level
-	dsn	string
+	l   *log.Logger
+	sev Level
+	dsn string
 }
 
 func (r *ravenLogger) Output(calldepth int, s string, sev Level) error {

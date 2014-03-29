@@ -23,8 +23,8 @@ import (
 )
 
 var scanConversionTests = []struct {
-	src	interface{}
-	dest	interface{}
+	src  interface{}
+	dest interface{}
 }{
 	{[]byte("-inf"), math.Inf(-1)},
 	{[]byte("+inf"), math.Inf(1)},
@@ -75,8 +75,8 @@ func TestScanConversion(t *testing.T) {
 }
 
 var scanConversionErrorTests = []struct {
-	src	interface{}
-	dest	interface{}
+	src  interface{}
+	dest interface{}
 }{
 	{[]byte("1234"), byte(0)},
 	{int64(1234), byte(0)},
@@ -120,7 +120,7 @@ func ExampleScan() {
 
 	for len(values) > 0 {
 		var title string
-		rating := -1	// initialize to illegal value to detect nil.
+		rating := -1 // initialize to illegal value to detect nil.
 		values, err = redis.Scan(values, &title, &rating)
 		if err != nil {
 			panic(err)
@@ -138,27 +138,27 @@ func ExampleScan() {
 }
 
 type s0 struct {
-	X	int
-	Y	int	`redis:"y"`
-	Bt	bool
+	X  int
+	Y  int `redis:"y"`
+	Bt bool
 }
 
 type s1 struct {
-	X	int	`redis:"-"`
-	I	int	`redis:"i"`
-	U	uint	`redis:"u"`
-	S	string	`redis:"s"`
-	P	[]byte	`redis:"p"`
-	B	bool	`redis:"b"`
-	Bt	bool
-	Bf	bool
+	X  int    `redis:"-"`
+	I  int    `redis:"i"`
+	U  uint   `redis:"u"`
+	S  string `redis:"s"`
+	P  []byte `redis:"p"`
+	B  bool   `redis:"b"`
+	Bt bool
+	Bf bool
 	s0
 }
 
 var scanStructTests = []struct {
-	title	string
-	reply	[]string
-	value	interface{}
+	title string
+	reply []string
+	value interface{}
 }{
 	{"basic",
 		[]string{"i", "-1234", "u", "5678", "s", "hello", "p", "world", "b", "t", "Bt", "1", "Bf", "0", "X", "123", "y", "456"},
@@ -208,10 +208,10 @@ func TestBadScanStructArgs(t *testing.T) {
 }
 
 var scanSliceTests = []struct {
-	src		[]interface{}
-	fieldNames	[]string
-	ok		bool
-	dest		interface{}
+	src        []interface{}
+	fieldNames []string
+	ok         bool
+	dest       interface{}
 }{
 	{
 		[]interface{}{[]byte("1"), nil, []byte("-1")},
@@ -314,8 +314,8 @@ func ExampleScanSlice() {
 	}
 
 	var albums []struct {
-		Title	string
-		Rating	int
+		Title  string
+		Rating int
 	}
 	if err := redis.ScanSlice(values, &albums); err != nil {
 		panic(err)
@@ -326,18 +326,18 @@ func ExampleScanSlice() {
 }
 
 var argsTests = []struct {
-	title		string
-	actual		redis.Args
-	expected	redis.Args
+	title    string
+	actual   redis.Args
+	expected redis.Args
 }{
 	{"struct ptr",
 		redis.Args{}.AddFlat(&struct {
-			I	int	`redis:"i"`
-			U	uint	`redis:"u"`
-			S	string	`redis:"s"`
-			P	[]byte	`redis:"p"`
-			Bt	bool
-			Bf	bool
+			I  int    `redis:"i"`
+			U  uint   `redis:"u"`
+			S  string `redis:"s"`
+			P  []byte `redis:"p"`
+			Bt bool
+			Bf bool
 		}{
 			-1234, 5678, "hello", []byte("world"), true, false,
 		}),
@@ -369,9 +369,9 @@ func ExampleArgs() {
 	defer c.Close()
 
 	var p1, p2 struct {
-		Title	string	`redis:"title"`
-		Author	string	`redis:"author"`
-		Body	string	`redis:"body"`
+		Title  string `redis:"title"`
+		Author string `redis:"author"`
+		Body   string `redis:"body"`
 	}
 
 	p1.Title = "Example"
@@ -383,9 +383,9 @@ func ExampleArgs() {
 	}
 
 	m := map[string]string{
-		"title":	"Example2",
-		"author":	"Steve",
-		"body":		"Map",
+		"title":  "Example2",
+		"author": "Steve",
+		"body":   "Map",
 	}
 
 	if _, err := c.Do("HMSET", redis.Args{}.Add("id2").AddFlat(m)...); err != nil {

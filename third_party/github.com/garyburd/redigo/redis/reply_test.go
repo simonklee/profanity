@@ -23,8 +23,8 @@ import (
 )
 
 type valueError struct {
-	v	interface{}
-	err	error
+	v   interface{}
+	err error
 }
 
 func ve(v interface{}, err error) valueError {
@@ -32,9 +32,9 @@ func ve(v interface{}, err error) valueError {
 }
 
 var replyTests = []struct {
-	name		interface{}
-	actual		valueError
-	expected	valueError
+	name     interface{}
+	actual   valueError
+	expected valueError
 }{
 	{
 		"strings([v1, v2])",
