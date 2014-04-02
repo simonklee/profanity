@@ -54,7 +54,7 @@ func (s *profanityFilters) get(lang string) wordfilter.ProfanityFilter {
 func jsonError(w http.ResponseWriter, error string, code int) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(code)
-	fmt.Fprintf(w, `{error: %s}`, error)
+	fmt.Fprintf(w, `{"error": "%s"}`, error)
 }
 
 type errorResponse struct {
