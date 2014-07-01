@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"sync"
 
+	"github.com/simonz05/profanity/Godeps/_workspace/src/github.com/simonz05/util/log"
 	"github.com/simonz05/profanity/wordfilter"
 	"github.com/simonz05/profanity/wordlist"
-	"github.com/simonz05/profanity/Godeps/_workspace/src/github.com/simonz05/util/log"
 )
 
 type profanityFilters struct {
@@ -54,7 +54,7 @@ func (s *profanityFilters) get(lang string) wordfilter.ProfanityFilter {
 func jsonError(w http.ResponseWriter, error string, code int) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(code)
-	fmt.Fprintf(w, `{error: %s}`, error)
+	fmt.Fprintf(w, `{error: "%s"}`, error)
 }
 
 type errorResponse struct {
