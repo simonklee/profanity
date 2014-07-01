@@ -7,9 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/gorilla/mux"
+	"github.com/simonz05/profanity/Godeps/_workspace/src/github.com/gorilla/mux"
 	"github.com/simonz05/profanity/db"
-	"github.com/simonz05/util/log"
+	"github.com/simonz05/profanity/Godeps/_workspace/src/github.com/simonz05/util/log"
 )
 
 var (

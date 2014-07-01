@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/simonz05/util/raven"
+	"github.com/simonz05/profanity/Godeps/_workspace/src/github.com/simonz05/util/raven"
 )
 
 type ravenLogger struct {
@@ -44,6 +44,8 @@ type ravenWriter struct {
 	c *raven.Client
 }
 
+// Write implements the io.Writer interface
 func (w *ravenWriter) Write(p []byte) (int, error) {
-	return len(p), w.c.Error(string(p))
+	go func() { w.c.Error(string(p)) }()
+	return len(p), nil
 }

@@ -170,7 +170,10 @@ func NewClient(dsn string, logger string) (self *Client, err error) {
 			Client:    udp_conn,
 			PublicKey: publicKey}
 	case u.Scheme == "https":
-		httpClient := &http.Client{nil, check, nil}
+		httpClient := &http.Client{
+			Transport:     nil,
+			CheckRedirect: check,
+			Jar:           nil}
 		u.Path = path.Join(u.Path, "/api/"+project+"/store/")
 		sentryTransport = &HttpSentryTransport{
 			URL:       u,
@@ -178,7 +181,10 @@ func NewClient(dsn string, logger string) (self *Client, err error) {
 			Project:   project,
 			PublicKey: publicKey}
 	case u.Scheme == "http":
-		httpClient := &http.Client{nil, check, nil}
+		httpClient := &http.Client{
+			Transport:     nil,
+			CheckRedirect: check,
+			Jar:           nil}
 		u.Path = path.Join(u.Path, "/api/"+project+"/store/")
 		sentryTransport = &HttpSentryTransport{
 			URL:       u,
