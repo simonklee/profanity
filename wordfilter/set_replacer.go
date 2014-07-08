@@ -5,7 +5,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/simonz05/profanity/util"
+	"github.com/simonz05/util/math"
 )
 
 // A thread-safe word filter
@@ -47,7 +47,7 @@ func (p *SetReplacer) buildReplacer(words []string) (map[string]string, error) {
 	repl := make(map[string]string, n)
 
 	for _, w := range words {
-		starindex = util.IntMin(len(w), len(starmap)-1)
+		starindex = math.IntMin(len(w), len(starmap)-1)
 		repl[strings.ToLower(w)] = starmap[starindex]
 	}
 

@@ -5,7 +5,7 @@ import (
 
 	"github.com/garyburd/redigo/redis"
 	"github.com/simonz05/profanity/db"
-	"github.com/simonz05/profanity/util"
+	"github.com/simonz05/util/math"
 )
 
 // RedisWordlist is a redis backed wordlist implementation.
@@ -32,8 +32,8 @@ func (w *RedisWordlist) Count() (int, error) {
 func (w *RedisWordlist) Get(count, offset int) ([]string, error) {
 	conn := w.conn.Get()
 	defer conn.Close()
-	starting_offset := util.IntMax(offset, 0)
-	ending_offset := util.IntMax((starting_offset+count)-1, 1)
+	starting_offset := math.IntMax(offset, 0)
+	ending_offset := math.IntMax((starting_offset+count)-1, 1)
 	return redis.Strings(conn.Do("ZRANGE", w.key, starting_offset, ending_offset))
 }
 
