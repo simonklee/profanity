@@ -22,6 +22,10 @@
 			"Rev": "a0d061f47dce719a09f47a9e82793c1c8b6fc509"
 		},
 		{
+			"ImportPath": "github.com/simonz05/util/math",
+			"Rev": "a0d061f47dce719a09f47a9e82793c1c8b6fc509"
+		},
+		{
 			"ImportPath": "github.com/simonz05/util/raven",
 			"Rev": "a0d061f47dce719a09f47a9e82793c1c8b6fc509"
 		}

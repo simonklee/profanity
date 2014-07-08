@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/simonz05/profanity/db"
-	"github.com/simonz05/profanity/util"
+	"github.com/simonz05/util/math"
 )
 
 var (
@@ -56,7 +56,7 @@ func testBackend(t *testing.T, test *TestCase) {
 		t.Fatalf("%s expected %d got %d, err %v", test, len(words), cnt, err)
 	}
 
-	expCnt := util.IntMin(10, len(words))
+	expCnt := math.IntMin(10, len(words))
 
 	if values, err := list.Get(10, 0); len(values) != expCnt || err != nil {
 		t.Fatalf("%s expected %d got %d, err %v", test, expCnt, len(values), err)

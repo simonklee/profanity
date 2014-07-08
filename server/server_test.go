@@ -10,7 +10,8 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/simonz05/profanity/util"
+	"github.com/simonz05/util/log"
+	"github.com/simonz05/util/math"
 )
 
 var (
@@ -20,7 +21,7 @@ var (
 )
 
 func startServer() {
-	util.LogLevel = 1
+	log.Severity = log.LevelError
 	setupServer("")
 	server = httptest.NewServer(nil)
 	serverAddr = server.Listener.Addr().String()
@@ -85,8 +86,8 @@ func blacklistGet(t *testing.T, count, offset int, out []string) {
 		t.Fatal(err)
 	}
 
-	util.Logf("res: %v", res)
-	expLen := util.IntMin(util.IntMax(res.Total-offset, 0), count)
+	log.Printf("res: %v", res)
+	expLen := math.IntMin(math.IntMax(res.Total-offset, 0), count)
 
 	if len(res.Blacklist) != expLen {
 		t.Fatalf("%d != %d", len(res.Blacklist), expLen)
