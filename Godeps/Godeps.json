@@ -11,19 +11,19 @@
 		},
 		{
 			"ImportPath": "github.com/gorilla/context",
-			"Rev": "1be7a086a5fd6440ef16fe96baeda0c78282b980"
+			"Rev": "14f550f51af52180c2eefed15e5fd18d63c0a64a"
 		},
 		{
 			"ImportPath": "github.com/gorilla/mux",
-			"Rev": "9ede152210fa25c1377d33e867cb828c19316445"
+			"Rev": "14cafe28513321476c73967a5a4f3454b6129c46"
 		},
 		{
 			"ImportPath": "github.com/simonz05/util/log",
-			"Rev": "a56ba0145f9e58ce41471db4c3ea595a5fc36b33"
+			"Rev": "a0d061f47dce719a09f47a9e82793c1c8b6fc509"
 		},
 		{
 			"ImportPath": "github.com/simonz05/util/raven",
-			"Rev": "a56ba0145f9e58ce41471db4c3ea595a5fc36b33"
+			"Rev": "a0d061f47dce719a09f47a9e82793c1c8b6fc509"
 		}
 	]
 }

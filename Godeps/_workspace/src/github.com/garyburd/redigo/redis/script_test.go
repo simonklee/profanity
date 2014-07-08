@@ -16,7 +16,7 @@ package redis_test
 
 import (
 	"fmt"
-	"github.com/simonz05/profanity/Godeps/_workspace/src/github.com/garyburd/redigo/redis"
+	"github.com/garyburd/redigo/redis"
 	"reflect"
 	"testing"
 	"time"
