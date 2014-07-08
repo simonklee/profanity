@@ -1,4 +1,11 @@
 language: go
-go: 1.3
+    - go: 1.3
+
+install:
+    - go get -v github.com/tools/godep
+
+script:
+    - GOPATH=`godep path`:$GOPATH ; godep go build -v ./...
+
 services:
   - redis-server
