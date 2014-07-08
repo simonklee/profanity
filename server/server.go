@@ -48,7 +48,7 @@ func ListenAndServe(laddr, dsn string) error {
 
 	log.Printf("Listen on %s", l.Addr())
 
-	sig.SigTrapCloser(l)
+	sig.TrapCloser(l)
 	err = http.Serve(l, nil)
 	log.Print("Shutting down ..")
 	return err
