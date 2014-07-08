@@ -154,7 +154,7 @@ func TestSanitize(t *testing.T) {
 		{"foo", "foo"},
 		{"foo xxxx", "foo ****"},
 		{"foo uck", "foo uck"},
-		{"foo fxxxx", "foo f****"},
+		{"foo fxxxx", "foo fxxxx"},
 	}
 
 	for i, x := range tests {
