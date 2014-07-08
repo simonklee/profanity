@@ -3,13 +3,11 @@ package server
 import (
 	"net"
 	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/gorilla/mux"
 	"github.com/simonz05/profanity/db"
 	"github.com/simonz05/util/log"
+	"github.com/simonz05/util/sig"
 )
 
 var (
@@ -18,18 +16,6 @@ var (
 	filters *profanityFilters
 	dbConn  db.Conn
 )
-
-func sigTrapCloser(l net.Listener) {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, syscall.SIGINT, syscall.SIGKILL, syscall.SIGTERM, syscall.SIGHUP)
-
-	go func() {
-		for _ = range c {
-			l.Close()
-			log.Printf("Closed listener %s", l.Addr())
-		}
-	}()
-}
 
 func setupServer(dsn string) (err error) {
 	dbConn, err = db.Open(dsn)
@@ -62,7 +48,7 @@ func ListenAndServe(laddr, dsn string) error {
 
 	log.Printf("Listen on %s", l.Addr())
 
-	sigTrapCloser(l)
+	sig.SigTrapCloser(l)
 	err = http.Serve(l, nil)
 	log.Print("Shutting down ..")
 	return err
