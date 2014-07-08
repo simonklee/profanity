@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/simonz05/profanity/Godeps/_workspace/src/github.com/garyburd/redigo/redis"
+	"github.com/garyburd/redigo/redis"
 )
 
 type DB struct {

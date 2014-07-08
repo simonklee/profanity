@@ -8,7 +8,7 @@ import (
 	"runtime/pprof"
 
 	"github.com/simonz05/profanity/server"
-	"github.com/simonz05/profanity/Godeps/_workspace/src/github.com/simonz05/util/log"
+	"github.com/simonz05/util/log"
 )
 
 var (

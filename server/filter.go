@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/simonz05/profanity/Godeps/_workspace/src/github.com/simonz05/util/log"
 	"github.com/simonz05/profanity/wordfilter"
 	"github.com/simonz05/profanity/wordlist"
+	"github.com/simonz05/util/log"
 )
 
 type profanityFilters struct {
