@@ -7,7 +7,7 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/garyburd/redigo/redis",
-			"Rev": "1c7841955920910958c71b1cc1a03f628267d468"
+			"Rev": "6628c86d6a89ce7983c7c9b5e98c1df795fbd256"
 		},
 		{
 			"ImportPath": "github.com/gorilla/context",
@@ -19,15 +19,19 @@
 		},
 		{
 			"ImportPath": "github.com/simonz05/util/log",
-			"Rev": "a0d061f47dce719a09f47a9e82793c1c8b6fc509"
+			"Rev": "0e4d6287e64a9047090fc04f2268064f752d05e0"
 		},
 		{
 			"ImportPath": "github.com/simonz05/util/math",
-			"Rev": "a0d061f47dce719a09f47a9e82793c1c8b6fc509"
+			"Rev": "0e4d6287e64a9047090fc04f2268064f752d05e0"
 		},
 		{
 			"ImportPath": "github.com/simonz05/util/raven",
-			"Rev": "a0d061f47dce719a09f47a9e82793c1c8b6fc509"
+			"Rev": "0e4d6287e64a9047090fc04f2268064f752d05e0"
+		},
+		{
+			"ImportPath": "github.com/simonz05/util/sig",
+			"Rev": "0e4d6287e64a9047090fc04f2268064f752d05e0"
 		}
 	]
 }
