@@ -19,19 +19,19 @@
 		},
 		{
 			"ImportPath": "github.com/simonz05/util/log",
-			"Rev": "0e4d6287e64a9047090fc04f2268064f752d05e0"
+			"Rev": "eb16508a48922db46edf496384f5afdda8c4adbf"
 		},
 		{
 			"ImportPath": "github.com/simonz05/util/math",
-			"Rev": "0e4d6287e64a9047090fc04f2268064f752d05e0"
+			"Rev": "eb16508a48922db46edf496384f5afdda8c4adbf"
 		},
 		{
 			"ImportPath": "github.com/simonz05/util/raven",
-			"Rev": "0e4d6287e64a9047090fc04f2268064f752d05e0"
+			"Rev": "eb16508a48922db46edf496384f5afdda8c4adbf"
 		},
 		{
 			"ImportPath": "github.com/simonz05/util/sig",
-			"Rev": "0e4d6287e64a9047090fc04f2268064f752d05e0"
+			"Rev": "eb16508a48922db46edf496384f5afdda8c4adbf"
 		}
 	]
 }
