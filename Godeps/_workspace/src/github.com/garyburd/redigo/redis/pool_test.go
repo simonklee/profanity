@@ -157,6 +157,7 @@ func TestPoolClose(t *testing.T) {
 	}
 
 	c2.Close()
+	c2.Close()
 
 	p.Close()
 
@@ -168,7 +169,7 @@ func TestPoolClose(t *testing.T) {
 
 	c3.Close()
 
-	d.check("after channel close", p, 3, 0)
+	d.check("after conn close", p, 3, 0)
 
 	c1 = p.Get()
 	if _, err := c1.Do("PING"); err == nil {
@@ -205,7 +206,31 @@ func TestPoolTimeout(t *testing.T) {
 	p.Close()
 }
 
-func TestBorrowCheck(t *testing.T) {
+func TestPoolConcurrenSendReceive(t *testing.T) {
+	p := &Pool{
+		Dial: DialTestDB,
+	}
+	c := p.Get()
+	done := make(chan error, 1)
+	go func() {
+		_, err := c.Receive()
+		done <- err
+	}()
+	c.Send("PING")
+	c.Flush()
+	err := <-done
+	if err != nil {
+		t.Fatalf("Receive() returned error %v", err)
+	}
+	_, err = c.Do("")
+	if err != nil {
+		t.Fatalf("Do() returned error %v", err)
+	}
+	c.Close()
+	p.Close()
+}
+
+func TestPoolBorrowCheck(t *testing.T) {
 	d := poolDialer{t: t}
 	p := &Pool{
 		MaxIdle:      2,
@@ -222,7 +247,7 @@ func TestBorrowCheck(t *testing.T) {
 	p.Close()
 }
 
-func TestMaxActive(t *testing.T) {
+func TestPoolMaxActive(t *testing.T) {
 	d := poolDialer{t: t}
 	p := &Pool{
 		MaxIdle:   2,
@@ -256,7 +281,7 @@ func TestMaxActive(t *testing.T) {
 	p.Close()
 }
 
-func TestMonitorCleanup(t *testing.T) {
+func TestPoolMonitorCleanup(t *testing.T) {
 	d := poolDialer{t: t}
 	p := &Pool{
 		MaxIdle:   2,
@@ -271,7 +296,7 @@ func TestMonitorCleanup(t *testing.T) {
 	p.Close()
 }
 
-func TestPubSubCleanup(t *testing.T) {
+func TestPoolPubSubCleanup(t *testing.T) {
 	d := poolDialer{t: t}
 	p := &Pool{
 		MaxIdle:   2,
@@ -302,7 +327,7 @@ func TestPubSubCleanup(t *testing.T) {
 	p.Close()
 }
 
-func TestTransactionCleanup(t *testing.T) {
+func TestPoolTransactionCleanup(t *testing.T) {
 	d := poolDialer{t: t}
 	p := &Pool{
 		MaxIdle:   2,

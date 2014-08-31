@@ -7,7 +7,7 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/garyburd/redigo/redis",
-			"Rev": "6628c86d6a89ce7983c7c9b5e98c1df795fbd256"
+			"Rev": "8d6d4f929affa96b443abd7fdb5a32ffc27865dc"
 		},
 		{
 			"ImportPath": "github.com/gorilla/context",
@@ -15,7 +15,7 @@
 		},
 		{
 			"ImportPath": "github.com/gorilla/mux",
-			"Rev": "14cafe28513321476c73967a5a4f3454b6129c46"
+			"Rev": "4b8fbc56f3b2400a7c7ea3dba9b3539787c486b6"
 		},
 		{
 			"ImportPath": "github.com/simonz05/util/log",

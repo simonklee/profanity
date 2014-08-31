@@ -33,7 +33,10 @@ var nowFunc = time.Now // for testing
 // pool has been reached.
 var ErrPoolExhausted = errors.New("redigo: connection pool exhausted")
 
-var errPoolClosed = errors.New("redigo: connection pool closed")
+var (
+	errPoolClosed = errors.New("redigo: connection pool closed")
+	errConnClosed = errors.New("redigo: connection closed")
+)
 
 // Pool maintains a pool of connections. The application calls the Get method
 // to get a connection from the pool and the connection's Close method to
@@ -131,12 +134,16 @@ func NewPool(newFn func() (Conn, error), maxIdle int) *Pool {
 }
 
 // Get gets a connection. The application must close the returned connection.
-// The connection acquires an underlying connection on the first call to the
-// connection Do, Send, Receive, Flush or Err methods. An application can force
-// the connection to acquire an underlying connection without executing a Redis
-// command by calling the Err method.
+// This method always returns a valid connection so that applications can defer
+// error handling to the first use of the connection. If there is an error
+// getting an underlying connection, then the connection Err, Do, Send, Flush
+// and Receive methods return that error.
 func (p *Pool) Get() Conn {
-	return &pooledConnection{p: p}
+	c, err := p.get()
+	if err != nil {
+		return errorConnection{err}
+	}
+	return &pooledConnection{p: p, c: c}
 }
 
 // ActiveCount returns the number of active connections in the pool.
@@ -253,17 +260,9 @@ func (p *Pool) put(c Conn, forceClose bool) error {
 }
 
 type pooledConnection struct {
-	c     Conn
-	err   error
 	p     *Pool
+	c     Conn
 	state int
-}
-
-func (c *pooledConnection) get() error {
-	if c.err == nil && c.c == nil {
-		c.c, c.err = c.p.get()
-	}
-	return c.err
 }
 
 var (
@@ -283,77 +282,73 @@ func initSentinel() {
 	}
 }
 
-func (c *pooledConnection) Close() (err error) {
-	if c.c != nil {
-		if c.state&multiState != 0 {
-			c.c.Send("DISCARD")
-			c.state &^= (multiState | watchState)
-		} else if c.state&watchState != 0 {
-			c.c.Send("UNWATCH")
-			c.state &^= watchState
-		}
-		if c.state&subscribeState != 0 {
-			c.c.Send("UNSUBSCRIBE")
-			c.c.Send("PUNSUBSCRIBE")
-			// To detect the end of the message stream, ask the server to echo
-			// a sentinel value and read until we see that value.
-			sentinelOnce.Do(initSentinel)
-			c.c.Send("ECHO", sentinel)
-			c.c.Flush()
-			for {
-				p, err := c.c.Receive()
-				if err != nil {
-					break
-				}
-				if p, ok := p.([]byte); ok && bytes.Equal(p, sentinel) {
-					c.state &^= subscribeState
-					break
-				}
+func (pc *pooledConnection) Close() error {
+	c := pc.c
+	if _, ok := c.(errorConnection); ok {
+		return nil
+	}
+	pc.c = errorConnection{errConnClosed}
+
+	if pc.state&multiState != 0 {
+		c.Send("DISCARD")
+		pc.state &^= (multiState | watchState)
+	} else if pc.state&watchState != 0 {
+		c.Send("UNWATCH")
+		pc.state &^= watchState
+	}
+	if pc.state&subscribeState != 0 {
+		c.Send("UNSUBSCRIBE")
+		c.Send("PUNSUBSCRIBE")
+		// To detect the end of the message stream, ask the server to echo
+		// a sentinel value and read until we see that value.
+		sentinelOnce.Do(initSentinel)
+		c.Send("ECHO", sentinel)
+		c.Flush()
+		for {
+			p, err := c.Receive()
+			if err != nil {
+				break
+			}
+			if p, ok := p.([]byte); ok && bytes.Equal(p, sentinel) {
+				pc.state &^= subscribeState
+				break
 			}
 		}
-		c.c.Do("")
-		c.p.put(c.c, c.state != 0)
-		c.c = nil
-		c.err = errPoolClosed
 	}
-	return err
+	c.Do("")
+	pc.p.put(c, pc.state != 0)
+	return nil
 }
 
-func (c *pooledConnection) Err() error {
-	if err := c.get(); err != nil {
-		return err
-	}
-	return c.c.Err()
+func (pc *pooledConnection) Err() error {
+	return pc.c.Err()
 }
 
-func (c *pooledConnection) Do(commandName string, args ...interface{}) (reply interface{}, err error) {
-	if err := c.get(); err != nil {
-		return nil, err
-	}
+func (pc *pooledConnection) Do(commandName string, args ...interface{}) (reply interface{}, err error) {
 	ci := lookupCommandInfo(commandName)
-	c.state = (c.state | ci.set) &^ ci.clear
-	return c.c.Do(commandName, args...)
+	pc.state = (pc.state | ci.set) &^ ci.clear
+	return pc.c.Do(commandName, args...)
 }
 
-func (c *pooledConnection) Send(commandName string, args ...interface{}) error {
-	if err := c.get(); err != nil {
-		return err
-	}
+func (pc *pooledConnection) Send(commandName string, args ...interface{}) error {
 	ci := lookupCommandInfo(commandName)
-	c.state = (c.state | ci.set) &^ ci.clear
-	return c.c.Send(commandName, args...)
+	pc.state = (pc.state | ci.set) &^ ci.clear
+	return pc.c.Send(commandName, args...)
 }
 
-func (c *pooledConnection) Flush() error {
-	if err := c.get(); err != nil {
-		return err
-	}
-	return c.c.Flush()
+func (pc *pooledConnection) Flush() error {
+	return pc.c.Flush()
 }
 
-func (c *pooledConnection) Receive() (reply interface{}, err error) {
-	if err := c.get(); err != nil {
-		return nil, err
-	}
-	return c.c.Receive()
+func (pc *pooledConnection) Receive() (reply interface{}, err error) {
+	return pc.c.Receive()
 }
+
+type errorConnection struct{ err error }
+
+func (ec errorConnection) Do(string, ...interface{}) (interface{}, error) { return nil, ec.err }
+func (ec errorConnection) Send(string, ...interface{}) error              { return ec.err }
+func (ec errorConnection) Err() error                                     { return ec.err }
+func (ec errorConnection) Close() error                                   { return ec.err }
+func (ec errorConnection) Flush() error                                   { return ec.err }
+func (ec errorConnection) Receive() (interface{}, error)                  { return nil, ec.err }
