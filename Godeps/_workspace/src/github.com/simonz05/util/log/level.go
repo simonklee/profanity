@@ -13,6 +13,7 @@ const (
 	LevelFatal Level = iota
 	LevelError
 	LevelInfo
+	LevelDebug
 )
 
 // Level is treated as a sync/atomic int32.

@@ -1,13 +1,18 @@
 {
 	"ImportPath": "github.com/simonz05/profanity",
-	"GoVersion": "go1.3",
+	"GoVersion": "go1.3.3",
 	"Packages": [
 		"./..."
 	],
 	"Deps": [
 		{
+			"ImportPath": "github.com/BurntSushi/toml",
+			"Comment": "v0.1.0",
+			"Rev": "2ceedfee35ad3848e49308ab0c9a4f640cfb5fb2"
+		},
+		{
 			"ImportPath": "github.com/garyburd/redigo/redis",
-			"Rev": "8d6d4f929affa96b443abd7fdb5a32ffc27865dc"
+			"Rev": "08550c8cc5b9d419fc472629d749d33b98f1d785"
 		},
 		{
 			"ImportPath": "github.com/gorilla/context",
@@ -15,23 +20,55 @@
 		},
 		{
 			"ImportPath": "github.com/gorilla/mux",
-			"Rev": "4b8fbc56f3b2400a7c7ea3dba9b3539787c486b6"
+			"Rev": "e444e69cbd2e2e3e0749a2f3c717cec491552bbf"
+		},
+		{
+			"ImportPath": "github.com/simonz05/util/handler",
+			"Rev": "f4dad026972dda4a08290c63b628d4e182f32254"
+		},
+		{
+			"ImportPath": "github.com/simonz05/util/kvstore",
+			"Rev": "f4dad026972dda4a08290c63b628d4e182f32254"
 		},
 		{
 			"ImportPath": "github.com/simonz05/util/log",
-			"Rev": "eb16508a48922db46edf496384f5afdda8c4adbf"
+			"Rev": "f4dad026972dda4a08290c63b628d4e182f32254"
 		},
 		{
 			"ImportPath": "github.com/simonz05/util/math",
-			"Rev": "eb16508a48922db46edf496384f5afdda8c4adbf"
+			"Rev": "f4dad026972dda4a08290c63b628d4e182f32254"
 		},
 		{
 			"ImportPath": "github.com/simonz05/util/raven",
-			"Rev": "eb16508a48922db46edf496384f5afdda8c4adbf"
+			"Rev": "f4dad026972dda4a08290c63b628d4e182f32254"
+		},
+		{
+			"ImportPath": "github.com/simonz05/util/session",
+			"Rev": "f4dad026972dda4a08290c63b628d4e182f32254"
 		},
 		{
 			"ImportPath": "github.com/simonz05/util/sig",
-			"Rev": "eb16508a48922db46edf496384f5afdda8c4adbf"
+			"Rev": "f4dad026972dda4a08290c63b628d4e182f32254"
+		},
+		{
+			"ImportPath": "github.com/tideland/goas/v1/version",
+			"Rev": "a5340c51dbd8e4e2794658723047cb47c099be9f"
+		},
+		{
+			"ImportPath": "github.com/tideland/goas/v2/logger",
+			"Rev": "a5340c51dbd8e4e2794658723047cb47c099be9f"
+		},
+		{
+			"ImportPath": "github.com/tideland/goas/v2/loop",
+			"Rev": "a5340c51dbd8e4e2794658723047cb47c099be9f"
+		},
+		{
+			"ImportPath": "github.com/tideland/goas/v2/monitoring",
+			"Rev": "a5340c51dbd8e4e2794658723047cb47c099be9f"
+		},
+		{
+			"ImportPath": "github.com/tideland/goas/v3/errors",
+			"Rev": "a5340c51dbd8e4e2794658723047cb47c099be9f"
 		}
 	]
 }

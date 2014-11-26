@@ -6,6 +6,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/simonz05/profanity/db"
+	"github.com/simonz05/util/handler"
 	"github.com/simonz05/util/log"
 	"github.com/simonz05/util/sig"
 )
@@ -33,7 +34,19 @@ func setupServer(dsn string) (err error) {
 	router.HandleFunc("/v1/profanity/blacklist/remove/", removeBlacklistHandle).Methods("POST", "PUT").Name("blacklist")
 	router.HandleFunc("/v1/profanity/blacklist/", getBlacklistHandle).Methods("GET").Name("blacklist")
 	router.StrictSlash(false)
-	http.Handle("/", router)
+
+	// global middleware
+	var middleware []func(http.Handler) http.Handler
+
+	switch log.Severity {
+	case log.LevelDebug:
+		middleware = append(middleware, handler.LogHandler, handler.DebugHandle, handler.RecoveryHandler)
+	default:
+		middleware = append(middleware, handler.LogHandler, handler.RecoveryHandler)
+	}
+
+	wrapped := handler.Use(router, middleware...)
+	http.Handle("/", wrapped)
 	return
 }
 

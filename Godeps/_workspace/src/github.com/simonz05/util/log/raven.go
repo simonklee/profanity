@@ -5,6 +5,7 @@
 package log
 
 import (
+	"errors"
 	"log"
 	"os"
 
@@ -37,15 +38,49 @@ func (r *ravenLogger) init() {
 		os.Exit(1)
 	}
 
-	r.l = log.New(&ravenWriter{c: c}, "", log.Lshortfile)
+	r.l = log.New(newRavenWriter(c), "", log.Lshortfile)
 }
 
 type ravenWriter struct {
-	c *raven.Client
+	c  *raven.Client
+	in chan []byte
+}
+
+func newRavenWriter(c *raven.Client) *ravenWriter {
+	w := &ravenWriter{
+		in: make(chan []byte, 32),
+		c:  c,
+	}
+
+	go func() {
+		w.process()
+	}()
+	return w
+}
+
+func (w *ravenWriter) process() {
+	for {
+		select {
+		case buf, ok := <-w.in:
+			if !ok {
+				return
+			}
+
+			err := w.c.Error(string(buf))
+
+			if err != nil {
+				os.Stderr.Write([]byte(err.Error()))
+			}
+		}
+	}
 }
 
 // Write implements the io.Writer interface
 func (w *ravenWriter) Write(p []byte) (int, error) {
-	go func() {w.c.Error(string(p))}()
-	return len(p), nil
+	select {
+	case w.in <- p:
+		return len(p), nil
+	default:
+		return 0, errors.New("err chan is full")
+	}
 }

@@ -62,6 +62,30 @@ func (l *multiLogger) init() {
 	}
 }
 
+// Debug calls Output to print to the standard logger.
+// Arguments are handled in the manner of fmt.Print.
+func Debug(v ...interface{}) {
+	if Severity >= LevelDebug {
+		std.Output(5, fmt.Sprint(v...), LevelDebug)
+	}
+}
+
+// Debugf calls Output to print to the standard logger.
+// Arguments are handled in the manner of fmt.Printf.
+func Debugf(format string, v ...interface{}) {
+	if Severity >= LevelDebug {
+		std.Output(5, fmt.Sprintf(format, v...), LevelDebug)
+	}
+}
+
+// Debugln calls Output to print to the standard logger.
+// Arguments are handled in the manner of fmt.Println.
+func Debugln(v ...interface{}) {
+	if Severity >= LevelDebug {
+		std.Output(5, fmt.Sprintln(v...), LevelDebug)
+	}
+}
+
 // Print calls Output to print to the standard logger.
 // Arguments are handled in the manner of fmt.Print.
 func Print(v ...interface{}) {
