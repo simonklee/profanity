@@ -25,3 +25,12 @@ func ReadFile(filename string) (*Config, error) {
 	_, err := toml.DecodeFile(filename, config)
 	return config, err
 }
+
+func ReadFileOrDefault(filename string) (*Config, error) {
+	config := new(Config)
+	_, err := toml.DecodeFile(filename, config)
+	if err == nil {
+		return config, nil
+	}
+	return &Config{}, nil
+}

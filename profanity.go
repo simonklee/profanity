@@ -39,7 +39,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	conf, err := config.ReadFile(*configFilename)
+	conf, err := config.ReadFileOrDefault(*configFilename)
 
 	if err != nil {
 		log.Fatal(err)
