@@ -21,16 +21,16 @@ Usage:
 
 The flags are:
 
-    -v
-            verbose mode
     -h
             help text
     -http=":8080"
             set bind address for the HTTP server
     -log=0
             set log level
-    -version=false
-            display version number and exit
+    -redis="redis://:@localhost:6379/15"
+            redis DSN
+    -config=filename
+            config filename
     -debug.cpuprofile=""
             run cpu profiler
 
@@ -38,7 +38,7 @@ The flags are:
 
 Create/overwrite blacklist.
 
-    POST --data "blacklist=x&blacklist=xx&blacklist=xxx" /api/1.0/blacklist/?lang=en_US
+    POST --data "blacklist=x&blacklist=xx&blacklist=xxx" /v1/profanity/blacklist/?lang=en_US
 
     HTTP/1.1 201 Created
     Date: Mon, 12 Aug 2013 09:37:17 GMT
@@ -47,7 +47,7 @@ Create/overwrite blacklist.
 
 Return current blacklist.
 
-    GET /api/1.0/blacklist/?lang=en_US&count=10&offset=0
+    GET /v1/profanity/blacklist/?lang=en_US&count=10&offset=0
 
     HTTP/1.1 200 OK
     Content-Type: application/json; charset=utf-8
@@ -58,7 +58,7 @@ Return current blacklist.
 
 Update blacklist.
 
-    PUT --data "blacklist=y" /api/1.0/blacklist/?lang=en_US
+    PUT --data "blacklist=y" /v1/profanity/blacklist/?lang=en_US
 
     HTTP/1.1 200 OK
     Date: Mon, 12 Aug 2013 09:37:17 GMT
@@ -67,7 +67,7 @@ Update blacklist.
 
 Remove from blacklist.
 
-    PUT --data "blacklist=y" /api/1.0/blacklist/remove/?lang=en_US
+    PUT --data "blacklist=y" /v1/profanity/blacklist/remove/?lang=en_US
 
     HTTP/1.1 200 OK
     Date: Mon, 12 Aug 2013 09:37:17 GMT
@@ -76,7 +76,7 @@ Remove from blacklist.
 
 Sanitize text.
 
-    GET /api/1.0/sanitize/?text=foo%20bar%20xxx&lang=en_US
+    GET /v1/profanity/sanitize/?text=foo%20bar%20xxx&lang=en_US
 
     HTTP/1.1 200 OK
     Date: Mon, 12 Aug 2013 09:37:38 GMT
