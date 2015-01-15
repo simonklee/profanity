@@ -10,6 +10,8 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/simonz05/profanity/config"
+	"github.com/simonz05/profanity/types"
 	"github.com/simonz05/util/log"
 	"github.com/simonz05/util/math"
 )
@@ -22,7 +24,11 @@ var (
 
 func startServer() {
 	log.Severity = log.LevelError
-	setupServer("")
+	conf := new(config.Config)
+	conf.Filter = types.Any
+	conf.Redis.DSN = ""
+
+	setupServer(conf)
 	server = httptest.NewServer(nil)
 	serverAddr = server.Listener.Addr().String()
 }

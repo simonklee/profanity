@@ -33,7 +33,7 @@ func (s *profanityFilters) addLang(lang string) wordfilter.ProfanityFilter {
 	}
 
 	list := wordlist.NewRedisWordlist(dbConn, lang)
-	f := wordfilter.NewWordfilter(list)
+	f := newWordfilter(list)
 	m[lang] = f
 	s.lang = &m
 	s.mu.Unlock()

@@ -5,24 +5,47 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/simonz05/profanity/config"
 	"github.com/simonz05/profanity/db"
+	"github.com/simonz05/profanity/types"
+	"github.com/simonz05/profanity/wordfilter"
+	"github.com/simonz05/profanity/wordlist"
 	"github.com/simonz05/util/handler"
 	"github.com/simonz05/util/log"
 	"github.com/simonz05/util/sig"
 )
 
 var (
-	Version = "0.1.0"
-	router  *mux.Router
-	filters *profanityFilters
-	dbConn  db.Conn
+	Version       = "0.1.0"
+	router        *mux.Router
+	filters       *profanityFilters
+	dbConn        db.Conn
+	newWordfilter func(list wordlist.Wordlist) *wordfilter.Wordfilter
 )
 
-func setupServer(dsn string) (err error) {
-	dbConn, err = db.Open(dsn)
+func setupServer(conf *config.Config) (err error) {
+	dbConn, err = db.Open(conf.Redis.DSN)
 
 	if err != nil {
 		return
+	}
+
+	newWordfilter = func(list wordlist.Wordlist) *wordfilter.Wordfilter {
+		var replacer wordfilter.Replacer
+
+		switch conf.Filter {
+		case types.Any:
+			replacer = wordfilter.NewStringReplacer()
+		case types.Word:
+			replacer = wordfilter.NewSetReplacer()
+		default:
+			replacer = wordfilter.NewSetReplacer()
+		}
+
+		return &wordfilter.Wordfilter{
+			List:     list,
+			Replacer: replacer,
+		}
 	}
 
 	filters = newProfanityFilters()
@@ -50,10 +73,10 @@ func setupServer(dsn string) (err error) {
 	return
 }
 
-func ListenAndServe(laddr, dsn string) error {
-	setupServer(dsn)
+func ListenAndServe(conf *config.Config) error {
+	setupServer(conf)
 
-	l, err := net.Listen("tcp", laddr)
+	l, err := net.Listen("tcp", conf.Listen)
 
 	if err != nil {
 		return err
